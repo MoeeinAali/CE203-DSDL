@@ -60,11 +60,11 @@
 
 \subsubsection*{خلاصه}
 
-در این آزمایش دو مدار مقایسه‌کننده با توصیف \textbf{جریان داده} (\lr{assign}) در \lr{Verilog} پیاده‌سازی شده‌اند و با \lr{Icarus Verilog} (\lr{iverilog}/\lr{vvp}) صحت‌سنجی شده‌اند:
+در این آزمایش دو مدار مقایسه‌کننده با توصیف {جریان داده} (\lr{assign}) در \lr{Verilog} پیاده‌سازی شده‌اند و با \lr{Icarus Verilog} (\lr{iverilog}/\lr{vvp}) صحت‌سنجی شده‌اند:
 
 \begin{enumerate}
   \item یک \lr{Cascadable 1-bit comparator} کاملا ترکیبی با \lr{assign}، و سپس یک مقایسه‌کننده‌ی چهاربیتی سلسله‌مراتبی ساخته‌شده از چهار نمونه‌ی آن (\lr{MSB}$\to$\lr{LSB}).
-  \item یک مقایسه‌کننده‌ی \textbf{سریال} ترتیبی که بیت‌به‌بیت (از پرارزش‌ترین بیت) دو عدد را می‌گیرد و در هر پالس ساعت نتیجه‌ی مقایسه‌ی تا همین‌جا را روی خروجی‌های \lr{GT}/\lr{EQ}/\lr{LT} می‌گذارد. برای این قسمت دو نسخه نوشته شده: نسخه‌ی \textbf{A} (منطق next-state با \lr{assign} + فلیپ‌فلاپ لبه‌حساس با \lr{always}) و نسخه‌ی \textbf{B} (تمام ماژول فقط با \lr{assign}، با زوج \lr{latch} مسترـ‌اسلیو برای نگهداری حالت).
+  \item یک مقایسه‌کننده‌ی {سریال} ترتیبی که بیت‌به‌بیت (از پرارزش‌ترین بیت) دو عدد را می‌گیرد و در هر پالس ساعت نتیجه‌ی مقایسه‌ی تا همین‌جا را روی خروجی‌های \lr{GT}/\lr{EQ}/\lr{LT} می‌گذارد. برای این قسمت دو نسخه نوشته شده: نسخه‌ی {A} (منطق next-state با \lr{assign} + فلیپ‌فلاپ لبه‌حساس با \lr{always}) و نسخه‌ی {B} (تمام ماژول فقط با \lr{assign}، با زوج \lr{latch} مسترـ‌اسلیو برای نگهداری حالت).
 \end{enumerate}
 
 \subsubsection*{هدف آزمایش}
@@ -82,7 +82,7 @@
 \begin{center}
 \begin{tabular}{@{}lll p{7.5cm}@{}}
 \toprule
-\textbf{سیگنال} & \textbf{جهت} & \textbf{پهنا} & \textbf{توضیح} \\
+{سیگنال} & {جهت} & {پهنا} & {توضیح} \\
 \midrule
 A, B & ورودی & ۱ & بیت‌های همین طبقه \\
 GT\_in, EQ\_in, LT\_in & ورودی & ۱ & نتیجه‌ی cascade از بیت‌های پرارزش‌تر \\
@@ -139,7 +139,7 @@ assign LT_out = LT_in | (EQ_in & ~A & B);
 \begin{center}
 \begin{tabular}{@{}lll p{7.8cm}@{}}
 \toprule
-\textbf{سیگنال} & \textbf{جهت} & \textbf{پهنا} & \textbf{توضیح} \\
+{سیگنال} & {جهت} & {پهنا} & {توضیح} \\
 \midrule
 clk & ورودی & ۱ & کلاک \\
 reset & ورودی & ۱ & ریست ناهم‌گام فعال‌بالا \\
@@ -190,12 +190,12 @@ LT &= \lnot eq_q \land \lnot gt_q
 \pagebreak
 \subsubsection*{ردیابی دستی (برای ارائه)}
 
-\textbf{مثال: مقایسه‌ی سریال $A{=}0100$ با $B{=}0011$} (MSB اول):
+{مثال: مقایسه‌ی سریال $A{=}0100$ با $B{=}0011$} (MSB اول):
 
 \begin{center}
 \begin{tabular}{@{}cccccc@{}}
 \toprule
-\textbf{گام} & \textbf{A} & \textbf{B} & \textbf{پیشوند} & \textbf{نتیجه} & \textbf{GEL} \\
+{گام} & {A} & {B} & {پیشوند} & {نتیجه} & {GEL} \\
 \midrule
 reset & -- & -- & $\varepsilon$ & برابر & 010 \\
 ۱ & ۰ & ۰ & $0$ vs $0$ & برابر & 010 \\
@@ -215,7 +215,7 @@ reset & -- & -- & $\varepsilon$ & برابر & 010 \\
 \begin{center}
 \begin{tabular}{@{}p{4.2cm}p{7.0cm}r@{}}
 \toprule
-\textbf{تست} & \textbf{پوشش} & \textbf{نتیجه} \\
+{تست} & {پوشش} & {نتیجه} \\
 \midrule
 tb\_cascadable\_1bit & همه‌ی ۳۲ ترکیب ورودی ۵بیتی & 32/32 \\
 tb\_comparator\_4bit & همه‌ی ۲۵۶ جفت $A,B\in\{0..15\}$ & 256/256 \\
@@ -231,7 +231,7 @@ tb\_serial (نسخه‌ی B) & همان بردارها روی ماژول فقط-
 \lstinputlisting[basicstyle=\ttfamily\scriptsize]{figs/test_run_output.txt}
 \end{latin}
 
-جمع کل: \textbf{۴ از ۴ مجموعه‌تست پاس، صفر شکست}.
+جمع کل: {۴ از ۴ مجموعه‌تست پاس، صفر شکست}.
 
 \subsubsection*{نکات پیاده‌سازی}
 

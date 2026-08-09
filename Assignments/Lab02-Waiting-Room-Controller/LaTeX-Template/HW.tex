@@ -47,76 +47,50 @@
 
 \subsubsection*{خلاصه}
 
-در این آزمایش یک مدار \textbf{ترتیبی} (دارای فلیپ‌فلاپ و کلاک) در \lr{Logisim Evolution} طراحی شده که ورود و خروج افراد به یک اتاق با ظرفیت محدود (حداکثر ۱۵ نفر) را کنترل می‌کند. مدار \lr{waiting\_room} از دو زیرسیستم تشکیل شده: یک \textbf{شمارنده‌ی بالا/پایین ۴بیتی} که تعداد افراد داخل اتاق را نگه می‌دارد (با پالس \lr{IN} افزایش، با پالس \lr{OUT} کاهش می‌یابد)، و یک \textbf{قفل درخواست ورود} که با ترکیب سیگنال‌های \lr{Ent} (دکمه‌ی درخواست ورود)، \lr{T} (در بازه‌ی مجاز زمانی) و پرشدن یا نشدن اتاق، خروجی \lr{Open} (فرمان باز شدن در) را تولید می‌کند. برخلاف آزمایش اول، اینجا هیچ قطعه‌ی حاضر و آماده‌ی \lr{Counter} از کتابخانه‌ی \lr{Memory} استفاده نشده -- شمارنده‌ی بالا/پایین کاملا از پایین به بالا و با ۴ قطعه‌ی \lr{Register} تک‌بیتی و منطق \lr{toggle} ساخته‌شده از گیت‌های \lr{XOR}/\lr{AND}/\lr{NOT} پیاده شده، دقیقا به همان روحیه‌ی ساخت از بلوک‌های پایه که در آزمایش اول دنبال شد.
-
-\subsubsection*{هدف آزمایش}
-
-\begin{itemize}
-  \item آشنایی عملی با طراحی یک مدار \textbf{ترتیبی} در \lr{Logisim}: قطعه‌ی \lr{Register}، پایه‌های \lr{clk}/\lr{en}/\lr{rst}، و تفاوت رفتار \lr{reset} ناهم‌گام (\lr{asynchronous}) در برابر بارگذاری هم‌گام با کلاک.
-  \item ساخت یک \textbf{شمارنده‌ی بالا/پایین} از قطعات پایه (نه از قطعه‌ی آماده‌ی \lr{Counter})، با درک زنجیره‌ی انتشار \lr{toggle-enable} بین بیت‌ها (مشابه رقم نقلی در جمع‌کننده‌های زنجیره‌ای آزمایش اول، اما برای شرط تگل‌شدن هر بیت).
-  \item طراحی یک مسیر فیدبک ترکیبی-ترتیبی: خروجی \lr{Open} به‌عنوان یک قفل (\lr{latch}) رفتار می‌کند که هم از راه یک شرط ورودی (ست) و هم از راه مقدار فعلی خودش (فیدبک) تغذیه می‌شود.
-  \item تفکیک دقیق بین منطق \textbf{ترکیبی محض} (\lr{Close}, \lr{Dopen}) و بخش \textbf{ترتیبی} (۵ قطعه‌ی \lr{Register}) در یک مدار واحد.
-\end{itemize}
+در این آزمایش یک مدار ترتیبی در \lr{Logisim Evolution} طراحی شده که ورود و خروج افراد به اتاقی با ظرفیت حداکثر ۱۵ نفر را کنترل می‌کند. مدار \lr{waiting\_room} شامل یک شمارنده‌ی بالا/پایین ۴بیتی (افزایش با \lr{IN}، کاهش با \lr{OUT}) و یک قفل ورود است که با سیگنال‌های \lr{Ent}، \lr{T} و پر بودن اتاق، خروجی \lr{Open} را می‌سازد. شمارنده از ۴ \lr{Register} تک‌بیتی و منطق \lr{toggle} با گیت‌های پایه ساخته شده، نه از قطعه‌ی آماده‌ی \lr{Counter}.
 
 \subsubsection*{رابط ورودی/خروجی}
 
 \begin{center}
 \begin{tabular}{@{}p{2.6cm}p{2.4cm}p{1.3cm}p{7.5cm}@{}}
 \toprule
-\textbf{سیگنال} & \textbf{جهت} & \textbf{پهنا} & \textbf{توضیح} \\
+{سیگنال} & {جهت} & {پهنا} & {توضیح} \\
 \midrule
-Clk  & ورودی & ۱ & کلاک سیستم \\
-Clr  & ورودی & ۱ & ریست ناهم‌گام، فعال در سطح پایین (\lr{Clr=0} یعنی ریست) \\
-IN   & ورودی & ۱ & پالس یک نفر وارد شد -- هم شمارنده را بالا می‌برد، هم \lr{Open} را خاموش می‌کند \\
-OUT  & ورودی & ۱ & پالس یک نفر خارج شد -- شمارنده را پایین می‌آورد \\
-Ent  & ورودی & ۱ & دکمه‌ی درخواست ورود \\
-T    & ورودی & ۱ & ۱ یعنی داخل بازه‌ی زمانی مجاز \\
-Open & خروجی & ۱ & فرمان باز شدن در (سطح، نه پالس) \\
-Close& خروجی & ۱ & ۱ یعنی اتاق پر است (۱۵ نفر) \\
-Q0..Q3 & خروجی (اشکال‌زدایی) & ۱ هرکدام & ۴ بیت شمارنده‌ی جمعیت داخل اتاق \\
-DBG\_EN\newline DBG\_D0\newline DBG\_U & خروجی (اشکال‌زدایی) & ۱ هرکدام & مشاهده‌ی مستقیم سیگنال‌های داخلی \lr{ENABLE}, \lr{D0}, \lr{U} \\
+$\mathrm{Clk}$  & ورودی & ۱ & کلاک سیستم \\
+$\mathrm{Clr}$  & ورودی & ۱ & ریست ناهم‌گام، فعال در سطح پایین ($\mathrm{Clr}{=}0$ یعنی ریست) \\
+$\mathrm{IN}$   & ورودی & ۱ & پالس یک نفر وارد شد -- هم شمارنده را بالا می‌برد، هم $\mathrm{Open}$ را خاموش می‌کند \\
+$\mathrm{OUT}$  & ورودی & ۱ & پالس یک نفر خارج شد -- شمارنده را پایین می‌آورد \\
+$\mathrm{Ent}$  & ورودی & ۱ & دکمه‌ی درخواست ورود \\
+$T$    & ورودی & ۱ & ۱ یعنی داخل بازه‌ی زمانی مجاز \\
+$\mathrm{Open}$ & خروجی & ۱ & فرمان باز شدن در (سطح، نه پالس) \\
+$\mathrm{Close}$& خروجی & ۱ & ۱ یعنی اتاق پر است (۱۵ نفر) \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\pagebreak
-\subsubsection*{معماری کلی}
+\subsubsection*{منطق کار مدار}
 
-\begin{center}
-\begin{latin}
-\begin{tikzpicture}[
-  box/.style={draw, rounded corners, minimum width=2.6cm, minimum height=1cm, align=center, font=\scriptsize},
-  reg/.style={draw, minimum width=1.9cm, minimum height=1cm, align=center, font=\scriptsize, fill=blue!6},
-  >=Stealth, node distance=0.9cm and 1.1cm
-]
-  \node[box] (enable) {ENABLE\\$= IN \oplus OUT$};
-  \node[box, below=of enable] (nclr) {NCLR\\$= \lnot Clr$};
-  \node[reg, right=1.6cm of enable, yshift=-0.5cm] (ctr) {4-bit Up/Down\\Counter\\($4\times$Register)};
-  \node[box, right=1.4cm of ctr] (close) {Close\\$=Q_0Q_1Q_2Q_3$};
-  \node[box, below=of close] (openlogic) {Dopen logic\\(combinational)};
-  \node[reg, below=of openlogic] (openreg) {Register\\Open};
+مسیر محاسبات از ورودی‌ها تا خروجی‌ها به ترتیب زیر است.
 
-  \draw[->] (enable) -- (ctr);
-  \draw[->] (nclr.east) -- ++(0.4,0) |- (ctr.west);
-  \draw[->] (ctr) -- (close);
-  \draw[->] (close.south) |- (openlogic.east);
-  \draw[->] (openlogic) -- (openreg);
-  \draw[->] (openreg.west) -- ++(-0.5,0) |- (openlogic.west) node[midway,left,font=\scriptsize]{Open feedback};
-  \draw[->] (nclr.south) |- ($(openreg.west)+(-0.1,0.25)$);
-\end{tikzpicture}
-\end{latin}
-\end{center}
-
-هیچ زیرمداری (\lr{subcircuit}) در این پروژه نیست -- برخلاف آزمایش اول که ساختار کاملا سلسله‌مراتبی بود، اینجا همه‌چیز در یک مدار مسطح \lr{waiting\_room} پیاده شده و بلوک‌بندی فقط در برچسب تونل‌ها (\lr{ENABLE}, \lr{NCLR}, \lr{Q0..Q3}, \lr{D0..D3}, \lr{E0}, \lr{TOGGLE2}, \lr{TOGGLE3}, \lr{OPENQ}, \lr{CLOSE}) دیده می‌شود.
-
-\subsubsection*{شمارنده‌ی بالا/پایین ۴بیتی}
-
-هر بیت شمارنده با یک \lr{Register} تک‌بیتی (\lr{clk=Clk}, \lr{en=ENABLE}, \lr{rst=NCLR}) پیاده شده. جهت شمارش با سیگنال $U \triangleq IN$ تعیین می‌شود: وقتی $U{=}1$ (کسی وارد می‌شود) شمارنده بالا می‌رود، وقتی $U{=}0$ (کسی خارج می‌شود، یعنی \lr{OUT} پالس زده) پایین می‌آید. مثل رقم نقلی در جمع‌کننده‌ی زنجیره‌ای، اینجا هم یک سیگنال \lr{toggle-enable} $E_i$ از بیت $i$ به بیت $i{+}1$ منتقل می‌شود -- بیت $i{+}1$ فقط زمانی تگل می‌کند که تمام بیت‌های پایین‌تر با جهت شمارش $U$ همسو باشند (دقیقا تعمیم قاعده‌ی معروف شمارنده‌ی باینری بالا/پایین):
-
+\paragraph*{سیگنال‌های مشترک.}
 \[
 \begin{aligned}
-D_0 &= \lnot Q_0 &&\text{(بیت صفر همیشه تگل می‌کند)}\\
-E_0 &= Q_0 \odot U &&\text{(\lr{XNOR}؛ آیا بیت صفر با جهت شمارش همسوست؟)}\\
+\mathrm{NCLR} &= \lnot\,\mathrm{Clr}
+&&\text{(ریست فعال‌بالا برای همه‌ی رجیسترها؛ $\mathrm{Clr}{=}0$ یعنی ریست)}\\
+\mathrm{ENABLE} &= \mathrm{IN} \oplus \mathrm{OUT}
+&&\text{(شمارنده فقط وقتی یکی از ورود/خروج رخ دهد آپدیت شود)}\\
+U &= \mathrm{IN}
+&&\text{(جهت شمارش: $1$ بالا، $0$ پایین)}
+\end{aligned}
+\]
+اگر $\mathrm{IN}$ و $\mathrm{OUT}$ هم‌زمان ۱ باشند، $\mathrm{ENABLE}=0$ و شمارش ثابت می‌ماند. با $\mathrm{Clr}=0$، هر پنج \lr{Register} ناهم‌گام صفر می‌شوند.
+
+\paragraph*{شمارنده‌ی جمعیت $Q_3Q_2Q_1Q_0$.}
+هر بیت یک \lr{Register} با $\mathrm{clk}=\mathrm{Clk}$، $\mathrm{en}=\mathrm{ENABLE}$، $\mathrm{rst}=\mathrm{NCLR}$ است. مقدار بعدی بیت‌ها:
+\[
+\begin{aligned}
+D_0 &= \lnot Q_0 &&\text{(بیت صفر همیشه تاگل می‌کند)}\\
+E_0 &= Q_0 \odot U &&\text{(آیا $Q_0$ با جهت $U$ همسوست؟)}\\
 D_1 &= Q_1 \oplus E_0\\
 E_1 &= E_0 \land (Q_1 \odot U)\\
 D_2 &= Q_2 \oplus E_1\\
@@ -124,8 +98,7 @@ E_2 &= E_1 \land (Q_2 \odot U)\\
 D_3 &= Q_3 \oplus E_2
 \end{aligned}
 \]
-
-هر $\odot$ (\lr{XNOR}) با یک \lr{XOR}$+$\lr{NOT} ساخته شده (کتابخانه محدود به گیت‌های پایه است). جمع کل: ۳ گیت \lr{XOR} برای محاسبه‌ی $Q_i \oplus U$، ۳ گیت \lr{NOT} برای تبدیل به \lr{XNOR} ($E_0,E_1$ ی بیت‌های ۱ و۲، و پایه‌ی $D_0$)، ۲ گیت \lr{AND} برای انتشار $E_1,E_2$، و ۳ گیت \lr{XOR} برای محاسبه‌ی نهایی $D_1,D_2,D_3$ -- در مجموع \textbf{۱۲ گیت} برای کل منطق شمارنده (به‌علاوه‌ی ۴ \lr{Register}). چون $E_i$ فقط وقتی ۱ است که همه‌ی بیت‌های $0..i$ با $U$ همسو باشند، این دقیقا معادل انتقال رقم نقلی یک شمارنده‌ی باینری معمولی است، با این تفاوت که پیمانه‌ی مقایسه به‌جای ۱ ثابت متغیر $U$ است تا هم شمارش بالا و هم پایین با یک مدار پوشش داده شود.
+$D_i$ ورودی بعدی رجیستر $Q_i$ است؛ $E_i$ اجازه‌ی تاگل بیت بعدی است (مثل رقم نقلی). هر $\odot$ با \lr{XOR}+\lr{NOT} ساخته شده.
 
 \begin{center}
 \begin{latin}
@@ -156,109 +129,58 @@ D_3 &= Q_3 \oplus E_2
 \end{latin}
 \end{center}
 
-\subsubsection*{منطق اتاق پر است (\lr{Close})}
-
-\lr{Close} کاملا \textbf{ترکیبی} است (بدون هیچ فلیپ‌فلاپ اضافه) و فقط از سه گیت \lr{AND} دوورودی زنجیره‌ای ساخته شده:
+\paragraph*{خروجی $\mathrm{Close}$.}
 \[
-\mathrm{Close} = Q_0 \land Q_1 \land Q_2 \land Q_3 \quad (\text{یعنی شمارش}=15).
+\mathrm{Close} = Q_0 \land Q_1 \land Q_2 \land Q_3 \quad (\text{اتاق پر، شمارش}=15)
 \]
-از آنجا که این عبارت مستقیم از خروجی \lr{Register}های شمارنده گرفته می‌شود (نه از یک نسخه‌ی تأخیری)، \lr{Close} همیشه وضعیت \emph{لحظه‌ای} اتاق را نشان می‌دهد -- در همان سیکل کلاکی که شمارنده به ۱۵ می‌رسد، \lr{Close} هم بی‌درنگ ۱ می‌شود.
+ترکیبی محض است و وضعیت لحظه‌ای شمارنده را نشان می‌دهد.
 
-\subsubsection*{منطق باز شدن در (\lr{Open})}
-
-بخش \lr{Open} یک قفل \lr{SR}گونه است: یک قطعه‌ی \lr{Register} با ورودی \lr{D} از یک شبکه‌ی ترکیبی که هم به یک شرط ست و هم به مقدار \emph{فعلی خود \lr{Open}} (فیدبک) وابسته است:
+\paragraph*{قفل $\mathrm{Open}$.}
+یک \lr{Register} جدا با $\mathrm{clk}=\mathrm{Clk}$، $\mathrm{en}=1$، $\mathrm{rst}=\mathrm{NCLR}$ و ورودی بعدی $\mathrm{Dopen}$:
 \[
 \begin{aligned}
 \mathrm{LT15} &= \lnot\,\mathrm{Close} &&\text{(هنوز جا هست)}\\
-\mathrm{EntValid} &= \mathrm{LT15} \land \mathrm{Ent} \land T &&\text{(درخواست معتبر ورود)}\\
-\mathrm{orr} &= \mathrm{EntValid} \lor \mathrm{Open} &&\text{(ست، یا از قبل باز بوده)}\\
-\mathrm{Dopen} &= \mathrm{orr} \land \lnot\,IN &&\text{(اما اگر همین حالا کسی رد شد، ببند)}
+\mathrm{EntValid} &= \mathrm{LT15} \land \mathrm{Ent} \land T &&\text{(درخواست معتبر)}\\
+\mathrm{orr} &= \mathrm{EntValid} \lor \mathrm{Open} &&\text{(ست تازه، یا از قبل باز)}\\
+\mathrm{Dopen} &= \mathrm{orr} \land \lnot\,IN &&\text{(با پالس $\mathrm{IN}$ در را ببند)}
 \end{aligned}
 \]
-\lr{Register} این بخش با \lr{clk=Clk} و \lr{en=1} (یک \lr{Constant} ثابت -- یعنی همیشه در هر لبه‌ی بالارونده نمونه‌برداری می‌کند) و \lr{rst=NCLR} پیکربندی شده. رفتار حاصل: به‌محض یک درخواست معتبر (\lr{EntValid}), \lr{Open} در لبه‌ی بعدی کلاک ست می‌شود و تا وقتی پالس \lr{IN} نیامده (یعنی شخص واقعا از در رد نشده) از راه فیدبک \lr{orr} روشن می‌ماند -- حتی اگر \lr{Ent} زودتر رها شود. همین‌که \lr{IN=1} شود، عبارت $\lnot IN$ صفر می‌شود و \lr{Dopen} در همان لبه صفر می‌گردد، یعنی \lr{Open} در لبه‌ی بعدی خاموش می‌شود. توجه شود که این خاموش‌شدن با همان پالس \lr{IN} است که شمارنده را هم بالا می‌برد -- یعنی عبور شخص از در دقیقا همان رویدادی است که هم شمارش را به‌روز و هم قفل در را آزاد می‌کند.
+با درخواست معتبر $\mathrm{Open}$ ست می‌شود و تا آمدن $\mathrm{IN}$ از راه فیدبک روشن می‌ماند؛ همان $\mathrm{IN}$ شمارنده را هم بالا می‌برد.
 
-\subsubsection*{ریست ناهم‌گام}
-
-پایه‌ی \lr{Clr} در کل مدار فقط یک بار معکوس می‌شود (\lr{NCLR}$=\lnot$\lr{Clr}) و این یک سیگنال به پایه‌ی \lr{rst} هر پنج \lr{Register} (۴ بیت شمارنده $+$ \lr{Open}) وصل است. چون \lr{rst} یک \lr{Register} در \lr{Logisim} ناهم‌گام (\lr{asynchronous}) عمل می‌کند، وقتی \lr{Clr=0} می‌شود همه‌ی حالت‌ها (شمارش و \lr{Open}) فورا صفر می‌شوند -- مستقل از سطح یا لبه‌ی کلاک -- دقیقا همان رفتاری که سناریوی \lr{reset\_mid\_operation} در تست‌ها بررسی می‌کند.
-
-\pagebreak
-\subsubsection*{ردیابی دستی (برای ارائه)}
-
-\textbf{مثال ۱ -- شروع از صفر، سه ورود پیاپی} (بخشی از سناریوی \lr{up\_counting\_full}؛ در همه‌ی گام‌ها \lr{T=1}):
+\subsubsection*{مدار پیاده‌سازی‌شده}
 
 \begin{center}
-\begin{tabular}{@{}p{1.6cm}p{2cm}p{2.3cm}p{2.3cm}p{2.3cm}p{2.6cm}@{}}
-\toprule
-\textbf{رویداد} & \textbf{ورودی} & \textbf{ENABLE} & \textbf{Dopen} & \textbf{$Q_3Q_2Q_1Q_0$ بعد} & \textbf{Open بعد} \\
-\midrule
-ریست & Clr=0 & -- & -- & 0000 & 0 \\
-\lr{Ent} فشرده می‌شود & Ent=1 & $0{\oplus}0{=}0$ & \lr{EntValid}=1 $\to$ \lr{orr}=1, $\lnot IN{=}1$ $\Rightarrow$ 1 & 0000 (بدون تغییر) & 1 \\
-شخص رد می‌شود & IN=1 & $1{\oplus}0{=}1$ & \lr{orr}=1 (فیدبک \lr{Open}), $\lnot IN{=}0$ $\Rightarrow$ 0 & 0001 & 0 \\
-\lr{Ent} دوباره & Ent=1 & $0{\oplus}0{=}0$ & مشابه گام دوم $\Rightarrow$ 1 & 0001 (بدون تغییر) & 1 \\
-شخص رد می‌شود & IN=1 & $1{\oplus}0{=}1$ & مشابه گام سوم $\Rightarrow$ 0 & 0010 & 0 \\
-\bottomrule
-\end{tabular}
+\includegraphics[width=\textwidth]{figs/pic.png}
 \end{center}
-
-\textbf{مثال ۲ -- اتاق پر، سپس یک نفر خارج می‌شود} (بخشی از سناریوی \lr{exit\_and\_reentry}؛ شمارنده روی ۱۵ است):
-
-\begin{center}
-\begin{tabular}{@{}p{2.1cm}p{2.4cm}p{4.3cm}p{4.3cm}@{}}
-\toprule
-\textbf{رویداد} & \textbf{ورودی} & \textbf{وضعیت پیش از لبه} & \textbf{وضعیت پس از لبه} \\
-\midrule
-درخواست ورود با اتاق پر & Ent=1, IN=0, OUT=0 & $Q{=}1111$, \lr{Close}=1 $\Rightarrow$ \lr{LT15}=0 $\Rightarrow$ \lr{EntValid}=0 & \lr{Open}=0 (رد می‌شود؛ \lr{orr}=0$\lor$0=0) \\
-یک نفر خارج می‌شود & IN=0, OUT=1 & $Q{=}1111$, $U{=}IN{=}0$ (جهت پایین) & $E_0{=}Q_0{\odot}0{=}1{\odot}0{=}0 \Rightarrow D_0{=}\lnot Q_0{=}0$؛ زنجیره $\Rightarrow Q{=}1110{=}14$, \lr{Close}=0 \\
-حالا درخواست ورود پذیرفته می‌شود & Ent=1, IN=0, OUT=0 & $Q{=}1110$, \lr{Close}=0 $\Rightarrow$ \lr{LT15}=1 $\Rightarrow$ \lr{EntValid}=1 & \lr{Open}=1 \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-\subsubsection*{چیدمان و سیم‌کشی}
-
-\begin{itemize}
-  \item مدار مسطح است (بدون زیرمدار)؛ به‌جای آن، هر سیگنال به‌اشتراک‌رفته بین بخش‌های دوردست مدار (\lr{ENABLE}, \lr{NCLR}, \lr{U}, \lr{Q0..Q3}, \lr{D0..D3}, \lr{E0}, \lr{TOGGLE2}, \lr{TOGGLE3}, \lr{OPENQ}, \lr{CLOSE}) از یک \lr{Tunnel} هم‌نام عبور می‌کند -- دقیقا همان تکنیک سیم بی‌نام‌نویسی راه دور که در آزمایش اول برای جلوگیری از تداخل بصری معرفی شد، اینجا هم برای اتصال چهار \lr{Register} پراکنده در صفحه (شمارنده) و شبکه‌ی منطق \lr{Open} در سمت راست صفحه به کار رفته.
-  \item چهار پایه‌ی خروجی اشکال‌زدایی \lr{Q0..Q3} (علاوه بر پایه‌های اصلی \lr{Open}/\lr{Close}) و سه پایه‌ی \lr{DBG\_EN}/\lr{DBG\_D0}/\lr{DBG\_U} برای مشاهده‌ی مستقیم سیگنال‌های داخلی حین شبیه‌سازی گذاشته شده‌اند -- بدون این‌ها، عیب‌یابی زنجیره‌ی \lr{toggle-enable} فقط از روی خروجی \lr{Close} تقریبا غیرممکن بود.
-  \item برچسب‌های تونل تکراری (مثلا چند تونل جدا با برچسب \lr{Q0}) در نقاط مختلف صفحه گذاشته شده‌اند تا سیم‌های بلند از وسط گیت‌های دیگر رد نشوند -- همه‌شان الکتریکی یک‌ شبکه‌اند، صرفا محل ورودشان به مدار فرق دارد.
-\end{itemize}
 
 \subsubsection*{نتایج تست}
 
-مدل مرجع رفتار مدار (\lr{gen\_tests.py}) به‌طور مستقل از خود مدار پیاده‌سازی شده و روی ۸ سناریوی هدفمند (نه فقط ورودی تصادفی) بردار تست تولید می‌کند؛ همه‌ی بردارها با اجرای واقعی \lr{Logisim} در حالت \lr{headless} (\lr{--test-vector}) روی خود \lr{waiting\_room.circ} تأیید شده‌اند:
+مدل مرجع رفتار مدار به‌طور مستقل از خود مدار پیاده‌سازی شده و روی ۸ سناریوی هدفمند بردار تست تولید می‌کند؛ همه‌ی بردارها با اجرای واقعی \lr{Logisim} در حالت \lr{headless} (\lr{--test-vector}) روی \lr{waiting\_room.circ} تأیید شده‌اند:
 
 \begin{center}
 \begin{tabular}{@{}p{4.6cm}p{7.2cm}r@{}}
 \toprule
-\textbf{سناریو} & \textbf{چه چیزی را بررسی می‌کند} & \textbf{ردیف} \\
+{سناریو} & {چه چیزی را بررسی می‌کند} & {ردیف} \\
 \midrule
-reset\_and\_basic          & ریست اولیه، سکون بدون رویداد            & 7 \\
-up\_counting\_full         & شمارش کامل ۰ تا ۱۵ با \lr{Ent}, سپس رد شدن ورودی ۱۶ام  & 63 \\
-out\_of\_hours\_blocked    & \lr{Ent} در \lr{T=0} باید همیشه رد شود        & 7 \\
-exit\_and\_reentry         & پر شدن اتاق، خروج یک نفر، ورود دوباره     & 69 \\
-simultaneous\_in\_out      & ورود و خروج هم‌زمان $\Rightarrow$ شمارش ثابت می‌ماند & 9 \\
-open\_holds\_until\_in     & \lr{Open} تا رسیدن پالس \lr{IN} قفل می‌ماند     & 11 \\
-down\_counting             & شمارش پایین‌رونده‌ی کامل تا صفر            & 21 \\
-reset\_mid\_operation      & ریست ناهم‌گام وسط عملیات                  & 14 \\
+reset-and-basic          & ریست اولیه، سکون بدون رویداد            & 7 \\
+up-counting-full         & شمارش کامل ۰ تا ۱۵ با \lr{Ent}, سپس رد شدن ورودی ۱۶ام  & 63 \\
+out-of-hours-blocked    & \lr{Ent} در \lr{T=0} باید همیشه رد شود        & 7 \\
+exit-and-reentry         & پر شدن اتاق، خروج یک نفر، ورود دوباره     & 69 \\
+simultaneous-in-out      & ورود و خروج هم‌زمان $\Rightarrow$ شمارش ثابت می‌ماند & 9 \\
+open-holds-until-in     & \lr{Open} تا رسیدن پالس \lr{IN} قفل می‌ماند     & 11 \\
+down-counting             & شمارش پایین‌رونده‌ی کامل تا صفر            & 21 \\
+reset-mid-operation      & ریست ناهم‌گام وسط عملیات                  & 14 \\
 \midrule
-\textbf{جمع (\lr{tests\_waiting\_room.vec})} & & \textbf{201} \\
+{جمع (\lr{tests\_waiting\_room.vec})} & & {201} \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-علاوه بر این، فایل \lr{debug\_counter.vec} (۶ ردیف) به‌صورت جداگانه فقط منطق شمارش رو به بالا را روی چند سیکل اول بررسی می‌کند. خروجی واقعی اجرای \lr{run\_tests.sh}:
+خروجی واقعی اجرای \lr{run\_tests.sh}:
 
 \begin{latin}
 \lstinputlisting[basicstyle=\ttfamily\scriptsize]{figs/test_run_output.txt}
 \end{latin}
 
-جمع کل: \textbf{۲ از ۲ مجموعه‌تست پاس (۲۰۷ ردیف بردار تست)، صفر شکست}.
-
-\subsubsection*{نکات پیاده‌سازی}
-
-\begin{itemize}
-  \item \textbf{اعتبارسنجی مقدار مجاز صفت \lr{size}}: \lr{Logisim-evolution} برای صفت \lr{size} (اندازه‌ی ظاهری گیت) دو مجموعه‌ی مقدار مجاز جدا دارد -- گیت‌های \lr{AND}/\lr{OR}/\lr{NAND}/\lr{NOR}/\lr{XOR}/\lr{XNOR} مقادیر $\{30,50,70\}$ را می‌پذیرند، اما \lr{NOT Gate} فقط $\{20,30\}$ را. مقداردهی \lr{size="50"} به یک \lr{NOT Gate} (که ظاهرا از کپی‌کردن تنظیمات گیت‌های دیگر پیش آمده بود) باعث خطای بارگذاری (\lr{attribute value (50) is not valid for size}) می‌شد؛ این مقدار برای هر ۷ نمونه‌ی \lr{NOT Gate} در فایل به $30$ اصلاح شد.
-  \item \textbf{نوار ابزار خالی}: عنصر \lr{<toolbar/>} فایل به‌صورت خالی (بدون هیچ \lr{<tool>}) ذخیره شده بود که باعث می‌شد \lr{Logisim} نوار ابزار خالی نشان دهد؛ نوار ابزار با مجموعه‌ی استاندارد ابزارها (\lr{Poke}/\lr{Edit}/\lr{Wiring}/\lr{Text}, \lr{Pin} ورودی و خروجی, \lr{Tunnel}, \lr{Constant}, گیت‌های پایه, \lr{Register}, \lr{Counter}) پر شد.
-  \item \textbf{تأیید با اجرای واقعی \lr{Logisim}، نه فقط تجزیه‌ی \lr{XML}}: هر دو اصلاح بالا، هم با تجزیه‌ی فایل و هم با اجرای واقعی \lr{Logisim-evolution 4.1.0} در حالت \lr{--tty stats} (که همه‌ی ۱۱۲ قطعه را بدون خطا می‌شمارد) و در حالت \lr{--test-vector} (هر ۲۰۷ ردیف بردار تست) دوباره بررسی شدند.
-\end{itemize}
 
 \end{document}

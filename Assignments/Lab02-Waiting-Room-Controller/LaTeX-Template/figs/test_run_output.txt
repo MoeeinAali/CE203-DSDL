@@ -1,13 +1,6 @@
 circ : waiting_room.circ
 java : /opt/homebrew/opt/openjdk@21/bin/java
 jar  : /Applications/Logisim-evolution.app/Contents/app/logisim-evolution-4.1.0-all.jar
-vecs : 2
-
-=== debug_counter.vec  →  circuit 'waiting_room' ===
-Loading test vector "debug_counter.vec"...
-Running 6 vectors...
-Passed: 6, Failed: 0
-PASS: debug_counter.vec
 
 === tests_waiting_room.vec  →  circuit 'waiting_room' ===
 Loading test vector "tests_waiting_room.vec"...
@@ -15,4 +8,4 @@ Running 201 vectors...
 Passed: 201, Failed: 0
 PASS: tests_waiting_room.vec
 
-summary: 2/2 passed, 0 failed
+summary: 1/1 passed, 0 failed
