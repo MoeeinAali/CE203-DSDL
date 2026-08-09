@@ -1,0 +1,5 @@
+.venv/
+waves/*.vcd
+__pycache__/
+*.vvp
+.DS_Store

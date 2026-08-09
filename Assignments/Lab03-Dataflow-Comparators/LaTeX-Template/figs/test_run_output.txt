@@ -1,0 +1,19 @@
+iverilog: Icarus Verilog version 12.0 (stable) ()
+
+=== tb_cascadable_1bit ===
+tb_cascadable_1bit: Passed: 32, Failed: 0
+PASS: tb_cascadable_1bit
+
+=== tb_comparator_4bit ===
+tb_comparator_4bit: Passed: 256, Failed: 0
+PASS: tb_comparator_4bit
+
+=== tb_serial_ff ===
+tb_serial: Passed: 312, Failed: 0
+PASS: tb_serial_ff
+
+=== tb_serial_assign ===
+tb_serial: Passed: 312, Failed: 0
+PASS: tb_serial_assign
+
+summary: 4/4 passed, 0 failed
