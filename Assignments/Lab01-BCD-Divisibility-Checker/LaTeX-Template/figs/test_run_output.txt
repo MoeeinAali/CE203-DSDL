@@ -1,0 +1,66 @@
+circ : bcd_divisibility.circ
+java : /opt/homebrew/opt/openjdk@21/bin/java
+jar  : /Applications/Logisim-evolution.app/Contents/app/logisim-evolution-4.1.0-all.jar
+vecs : 10
+
+=== tests_adder4.vec  →  circuit 'adder4' ===
+Loading test vector “tests_adder4.vec”…
+Running 256 vectors…
+Passed: 256, Failed: 0
+PASS: tests_adder4.vec
+
+=== tests_adder5.vec  →  circuit 'adder5' ===
+Loading test vector “tests_adder5.vec”…
+Running 1024 vectors…
+Passed: 1024, Failed: 0
+PASS: tests_adder5.vec
+
+=== tests_cmp3.vec  →  circuit 'cmp3' ===
+Loading test vector “tests_cmp3.vec”…
+Running 16 vectors…
+Passed: 16, Failed: 0
+PASS: tests_cmp3.vec
+
+=== tests_eq5.vec  →  circuit 'eq5' ===
+Loading test vector “tests_eq5.vec”…
+Running 1024 vectors…
+Passed: 1024, Failed: 0
+PASS: tests_eq5.vec
+
+=== tests_full_adder.vec  →  circuit 'full_adder' ===
+Loading test vector “tests_full_adder.vec”…
+Running 8 vectors…
+Passed: 8, Failed: 0
+PASS: tests_full_adder.vec
+
+=== tests_main.vec  →  circuit 'main' ===
+Loading test vector “tests_main.vec”…
+Running 40 vectors…
+Passed: 40, Failed: 0
+PASS: tests_main.vec
+
+=== tests_mod11_checker_exhaustive.vec  →  circuit 'mod11_checker' ===
+Loading test vector “tests_mod11_checker_exhaustive.vec”…
+Running 10000 vectors…
+Passed: 10000, Failed: 0
+PASS: tests_mod11_checker_exhaustive.vec
+
+=== tests_mod11_checker.vec  →  circuit 'mod11_checker' ===
+Loading test vector “tests_mod11_checker.vec”…
+Running 35 vectors…
+Passed: 35, Failed: 0
+PASS: tests_mod11_checker.vec
+
+=== tests_mod3_checker_exhaustive.vec  →  circuit 'mod3_checker' ===
+Loading test vector “tests_mod3_checker_exhaustive.vec”…
+Running 10000 vectors…
+Passed: 10000, Failed: 0
+PASS: tests_mod3_checker_exhaustive.vec
+
+=== tests_mod3_checker.vec  →  circuit 'mod3_checker' ===
+Loading test vector “tests_mod3_checker.vec”…
+Running 35 vectors…
+Passed: 35, Failed: 0
+PASS: tests_mod3_checker.vec
+
+summary: 10/10 passed, 0 failed
