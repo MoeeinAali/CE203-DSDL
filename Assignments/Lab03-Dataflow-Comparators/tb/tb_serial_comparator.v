@@ -63,7 +63,7 @@ module tb_serial_comparator;
     endtask
 
     // Feed 4 bits MSB-first; check after each bit.
-    // Prefix va[3:k] ≡ (va >> k) as an unsigned integer comparison.
+    // Prefix va[3:k] == (va >> k) as an unsigned integer comparison.
     task automatic feed4_check;
         input [3:0] va;
         input [3:0] vb;
