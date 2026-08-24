@@ -1,5 +1,3 @@
-iverilog: Icarus Verilog version 12.0 (stable) ()
-
 === tb_booth_multiplier ===
 cycles per multiply: min=5 max=5 (N=8, radix-4 => 4 iterations)
 tb_booth_multiplier: Passed: 65562, Failed: 0

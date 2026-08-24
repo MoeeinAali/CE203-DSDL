@@ -1,10 +1,5 @@
 `timescale 1ns/1ps
 
-// Self-checking testbench for the radix-4 Booth multiplier.
-//
-// The reference is Verilog's own signed `*` operator, so the test proves the
-// Booth recoding + arithmetic shift produce exactly the textbook product
-// over the ENTIRE signed input space (all 256x256 = 65536 pairs).
 module tb_booth_multiplier;
     localparam integer N = 8;
 
@@ -23,16 +18,11 @@ module tb_booth_multiplier;
     integer ai, bi;
     integer cycles, max_cycles, min_cycles;
     reg signed [2*N-1:0] expected;
-    // Signed holders: a part-select like ai[N-1:0] is unsigned in Verilog,
-    // so the loop values must pass through signed regs before being used
-    // either as stimulus or inside the `a * b` reference below.
     reg signed [N-1:0]   sa, sb;
 
     initial Clk = 1'b0;
     always #5 Clk = ~Clk;
 
-    // Drive one multiplication and wait for `done`, counting the clocks it
-    // actually took so the speed-up claim can be measured, not assumed.
     task automatic multiply;
         input signed [N-1:0] a;
         input signed [N-1:0] b;
@@ -44,8 +34,6 @@ module tb_booth_multiplier;
             @(negedge Clk);
             start = 1'b0;
 
-            // Latency = clock edges from the one that sampled `start`
-            // until `done` is observed high.
             cycles = 0;
             while (!done) begin
                 @(posedge Clk); #1;
@@ -100,7 +88,6 @@ module tb_booth_multiplier;
 
         do_reset;
 
-        // --- directed corner cases (the ones Booth classically gets wrong) --
         check(  0,   0);
         check(  0,  57);
         check( 57,   0);
@@ -108,35 +95,32 @@ module tb_booth_multiplier;
         check(  1,  -1);
         check( -1,   1);
         check( -1,  -1);
-        check(127, 127);   // largest positives
+        check(127, 127);  
         check(127,-128);
         check(-128,127);
-        check(-128,-128);  // most negative squared: needs the guard bit
+        check(-128,-128); 
         check(-128,   1);
         check(  1,-128);
         check(-128,  -1);
         check( -1,-128);
-        check( 85, -86);   // alternating bit patterns 0x55 / 0xAA
+        check( 85, -86);  
         check(-86,  85);
         check( 85,  85);
         check(-86, -86);
 
-        // --- back-to-back starts without an intervening reset --------------
         check( 12,  10);
         check(-12,  10);
         check( 12, -10);
         check(-12, -10);
 
-        // --- reset in the middle of a multiplication -----------------------
         @(negedge Clk);
         Multiplicand = 100; Multiplier = 100; start = 1'b1;
         @(negedge Clk); start = 1'b0;
-        @(posedge Clk);          // let it get part-way through
+        @(posedge Clk);      
         @(posedge Clk);
         do_reset;
-        check(6, 7);             // must still work correctly afterwards
+        check(6, 7);        
 
-        // --- EXHAUSTIVE: every signed 8x8 pair -----------------------------
         for (ai = -128; ai <= 127; ai = ai + 1)
             for (bi = -128; bi <= 127; bi = bi + 1) begin
                 sa = ai[N-1:0];

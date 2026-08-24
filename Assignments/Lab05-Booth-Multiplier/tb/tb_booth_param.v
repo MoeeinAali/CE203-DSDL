@@ -1,12 +1,5 @@
 `timescale 1ns/1ps
 
-// Two things this testbench establishes that the main one does not:
-//
-//   1. The design is genuinely parameterised in N (4, 8 and 16 bit
-//      instances all multiply correctly), so nothing is hard-coded to 8.
-//   2. The radix-4 iteration count really is N/2 and not N — i.e. the
-//      "shift more than one bit per clock" requirement of the lab is met.
-//      The cycle count is MEASURED from the DUT, not asserted.
 module tb_booth_param;
 
     integer pass, fail;
@@ -50,9 +43,6 @@ module tb_booth_param;
     integer cyc4, cyc8, cyc16;
     integer i, j;
 
-    // NOTE: a bit part-select such as i[7:0] is UNSIGNED in Verilog, so
-    // `i[7:0] * j[7:0]` silently computes an unsigned product. The reference
-    // must be formed from signed regs for the comparison to mean anything.
     reg signed [3:0]   sa4,  sb4;
     reg signed [7:0]   sa8,  sb8;
     reg signed [15:0]  sa16, sb16;
@@ -83,8 +73,6 @@ module tb_booth_param;
                     sa4 = i[3:0]; sb4 = j[3:0]; exp4 = sa4 * sb4;
                     a4 = sa4; b4 = sb4; start4 = 1;
                     @(negedge Clk4); start4 = 0;
-                    // Count clock edges from the one that sampled `start`
-                    // until `done` is observed high.
                     cyc4 = 0;
                     while (!done4) begin
                         @(posedge Clk4); #1; cyc4 = cyc4 + 1;
@@ -93,7 +81,6 @@ module tb_booth_param;
                     report("N4/product", p4 === exp4);
                 end
             end
-            // 4-bit radix-4 => 2 iterations => 2+1 = 3 clocks to done
             report("N4/cycles", cyc4 == (4/2) + 1);
             $display("  N=4  : %0d clocks per multiply (radix-2 would need %0d)",
                      cyc4, 4 + 1);
@@ -125,7 +112,6 @@ module tb_booth_param;
         end
     endtask
 
-    // --- N=16 : sampled pairs, incl. -32768 ---
     task automatic run16;
         begin
             @(negedge Clk16); RstN16 = 0; start16 = 0; a16 = 0; b16 = 0;
