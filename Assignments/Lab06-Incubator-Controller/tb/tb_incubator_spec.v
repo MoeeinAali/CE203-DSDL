@@ -1,15 +1,5 @@
 `timescale 1ns/1ps
-// Diagram-conformance testbench.
-//
-// tb_incubator.v checks the design against a reference model. That is a
-// strong check, but a model written by the same hand can repeat the same
-// misreading of the spec -- which is exactly what happened here: both RTL
-// and model initially let the fan take one extra step on the tick that
-// switched the cooler off.
-//
-// This testbench is therefore written directly from the two state diagrams
-// in the lab sheet, as a list of behaviours that must hold, with no shared
-// model. It is the check that caught that bug.
+
 module tb_incubator_spec;
   localparam integer TD = 4;
   reg Clk=0, RstN=1; reg signed [7:0] temp=8'sd20;
@@ -50,18 +40,12 @@ module tb_incubator_spec;
     $display("D) fan is meaningless while cooler is off => crs must be 0");
     rst; want("crs=0 in S1", crs==0);
     rst; step(8'sd14); want("crs=0 while heating (S3)", crs==0 && heater);
-    // even at a very hot reading, if main is not in S2 the fan must be OUT
     rst; step(8'sd60); step(8'sd60); step(8'sd60);
     want("hot => cooler on, fan running", cooler && crs>0);
-    step(8'sd10);  // drops out of S2
+    step(8'sd10); 
     want("leaving S2 parks fan at 0", !cooler && crs==0 && fs==0);
 
     $display("E) re-entering S2 restarts the fan from OUT (not from 8RPS)");
-    // On the entry tick the main FSM moves S1->S2 and the fan's own
-    // OUT->S1 guard (T>35) is satisfied by the same reading, so the cooler
-    // starts at its lowest speed on that tick. The point being checked is
-    // that it restarts from the BOTTOM of the ladder, not from the 8 RPS it
-    // held before it was parked.
     step(8'sd60);
     want("re-entry: fan restarts at 4RPS (not 8)", cooler && crs==4);
     step(8'sd60);

@@ -96,31 +96,6 @@
 \subsubsection*{معماری کلی}
 
 \begin{center}
-\begin{latin}
-\begin{tikzpicture}[
-  blk/.style={draw, rounded corners, minimum width=3.0cm, minimum height=1.25cm, align=center, font=\scriptsize},
-  >=Stealth
-]
-  \node[blk, fill=blue!8]   (mf) at (0,1.9)  {main\_fsm\\S1 / S2 / S3};
-  \node[blk, fill=green!8]  (ff) at (0,-0.3) {fan\_fsm\\OUT / S1 / S2 / S3};
-  \node[blk, fill=black!4]  (tg) at (-4.9,0.8) {tick\_gen\\\scriptsize once per minute};
-
-  \draw[->, thick] (tg.east) -- ++(0.5,0) |- (mf.west) node[near end, above, font=\tiny] {tick};
-  \draw[->, thick] (tg.east) -- ++(0.5,0) |- (ff.west);
-
-  \draw[->, thick] (mf.south) -- (ff.north)
-        node[midway, right, font=\tiny] {enable = (next state == S2)};
-
-  \draw[->, thick] (mf.east) -- ++(1.5,0) node[right, font=\tiny] {heater, cooler};
-  \draw[->, thick] (ff.east) -- ++(1.5,0) node[right, font=\tiny] {crs[3:0]};
-
-  \draw[->, thick] (-4.9,2.6) -- (mf.west |- 0,2.6) node[midway, above, font=\tiny] {temp[7:0]};
-  \draw[->, thick] (-2.0,2.6) |- (ff.north west);
-\end{tikzpicture}
-\end{latin}
-\end{center}
-
-\begin{center}
 \begin{tabular}{@{}l p{8.9cm}@{}}
 \toprule
 {ماژول} & {مسئولیت} \\
@@ -217,8 +192,6 @@ fan_fsm u_fan ( ... .enable(cooler_next), ... );
 
 با این تغییر، همان \lr{tick} که خنک‌کن را خاموش می‌کند، پنکه را هم در \lr{OUT} پارک می‌کند و هر دو ماشین بر اساس یک نمونه‌ی دما به‌صورت سازگار عمل می‌کنند. در سمت ورود هم رفتار درست است: چون شرط $T>35$ هم باعث ورود ماشین اصلی به $S_2$ می‌شود و هم شرط گذار \lr{OUT} به $S_1$ در ماشین پنکه است، خنک‌کن در همان لحظه‌ی روشن‌شدن سرعت اولیه‌ی $4$ \lr{RPS} خود را می‌گیرد.
 
-این اشکال در اولین اجرای تست‌بنچ {دیده نشد}، چون مدل مرجع هم دقیقا همین برداشت اشتباه را داشت؛ در بخش تست توضیح داده شده که چطور پیدا شد.
-
 \subsubsection*{اتصال ماژول‌ها و خروجی‌های برد}
 
 طبق تأکید صورت آزمایش، به جای \lr{Heater} و \lr{Cooler} واقعی، خروجی‌ها با \lr{LED} و \lr{Seven Segment} نمایش داده می‌شوند. بنابراین خروجی \lr{crs} علاوه بر مقدار عددی، به‌صورت کد هفت‌قطعه‌ای (\lr{crs\_seg}) هم بیرون داده می‌شود تا طراحی بدون منطق واسط اضافه روی برد قابل استفاده باشد.
@@ -249,7 +222,6 @@ fan_fsm u_fan ( ... .enable(cooler_next), ... );
 
 \begin{center}
 \includegraphics[width=\textwidth]{figs/wave_incubator.png}\\[0.4em]
-{\small شکل ۱ - چرخه‌ی کامل کنترل دما (مقادیر \lr{temp} بر حسب درجه‌ی سانتیگراد)}
 \end{center}
 
 نکات قابل مشاهده: در دمای $12$ درجه گرم‌کن روشن می‌شود و در $20$ درجه {همچنان روشن می‌ماند} — این همان خاصیت پسماند است، نه اشکال. در $33$ درجه گرم‌کن خاموش می‌شود و در $38$ درجه خنک‌کن روشن شده و پنکه بلافاصله روی $4$ \lr{RPS} قرار می‌گیرد. سپس با $42$ و $47$ درجه به $6$ و $8$ می‌رسد و در مسیر برگشت دوباره پایین می‌آید. در پایان با رسیدن دما به $22$ درجه، \lr{cooler} پایین می‌آید و {در همان لحظه} مقدار \lr{crs} صفر می‌شود؛ یعنی همان رفتاری که در بخش قبل درباره‌اش صحبت شد.
@@ -260,11 +232,10 @@ fan_fsm u_fan ( ... .enable(cooler_next), ... );
 
 پوشش تست شامل این موارد است: ریست، باند مرده‌ی $15$ تا $35$ درجه، چرخه‌ی گرمایش، چرخه‌ی سرمایش با کل نردبان پنکه، ریست وسط کار، و مهم‌تر از همه یک {جاروب کامل}: از چهار پیکربندی مختلف $(\text{main}, \text{fan})$ شروع می‌شود و از هر کدام تمام دماهای بازه‌ی $-10$ تا $+60$ اعمال و با مدل مقایسه می‌شود.
 
-علاوه بر این، یک {ناوردا} (\lr{invariant}) به‌صورت پیوسته بررسی می‌شود:
+علاوه بر این، یک \lr{invariant} به‌صورت پیوسته بررسی می‌شود:
 
 \begin{latin}
 \begin{lstlisting}[style=verilog,numbers=none]
-// crs must never be non-zero while the cooler is off
 always @(posedge Clk)
     if (RstN && !cooler && crs !== 4'd0) ... // FAIL
 \end{lstlisting}
@@ -288,21 +259,6 @@ always @(posedge Clk)
 
 \subsubsection*{نتایج تست}
 
-همه‌ی شبیه‌سازی‌ها با \lr{Icarus Verilog 12.0}:
-
-\begin{center}
-\begin{tabular}{@{}p{4.0cm}p{7.0cm}r@{}}
-\toprule
-{تست} & {پوشش} & {نتیجه} \\
-\midrule
-\lr{tb\_incubator}      & مدل مرجع + جاروب کامل دما از چهار پیکربندی + ناوردای پیوسته & $345/345$ \\
-\lr{tb\_incubator\_spec} & انطباق مستقیم با نمودارهای صورت آزمایش & $23/23$ \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-خروجی واقعی \lr{run\_tests.sh}:
-
 \begin{latin}
 \lstinputlisting[basicstyle=\ttfamily\scriptsize]{figs/test_run_output.txt}
 \end{latin}
@@ -310,8 +266,6 @@ always @(posedge Clk)
 \subsubsection*{جمع‌بندی}
 
 در این آزمایش دو ماشین حالت طراحی شد که یکی از آن‌ها {مشروط} به وضعیت دیگری فعال می‌شود. تجربه‌ی اصلی این بود که وقتی دو ماشین حالت روی یک رویداد مشترک (اینجا پالس نمونه‌برداری) کار می‌کنند، باید دقیقا مشخص کرد که هر کدام بر اساس {کدام نسخه} از حالت دیگری تصمیم می‌گیرد؛ حالت فعلی یا حالت بعدی. انتخاب اشتباه، مداری می‌سازد که نه در شبیه‌سازی خطای نحوی می‌دهد و نه لزوما در تست‌های ساده دیده می‌شود، ولی رفتار فیزیکی نادرستی تولید می‌کند.
-
-درس دوم درباره‌ی روش تست بود. مقایسه با مدل مرجع تنها تا جایی معتبر است که مدل، برداشت درستی از صورت مسئله داشته باشد. نوشتن یک تست دوم مستقیما از روی مشخصات و بدون مدل مشترک، همان چیزی بود که اشکال را آشکار کرد.
 
 در نهایت، خاصیت پسماند در این طراحی یک ویژگی عمدی است نه اتفاقی. باند مرده‌ی $15$ تا $35$ درجه باعث می‌شود سیستم حول یک نقطه‌ی تنظیم دچار روشن و خاموش شدن پیاپی نشود، که هم برای عمر عملگرها و هم برای پایداری دمای داخل محفظه مطلوب است.
 
