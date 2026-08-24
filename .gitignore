@@ -1,0 +1,17 @@
+# Python virtualenv used by the waveform plotting scripts
+.venv/
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.lop
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# Simulator artifacts
+*.vvp
+
+# macOS
+.DS_Store

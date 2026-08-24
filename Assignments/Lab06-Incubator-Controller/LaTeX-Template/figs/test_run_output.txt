@@ -1,0 +1,11 @@
+iverilog: Icarus Verilog version 12.0 (stable) ()
+
+=== tb_incubator ===
+tb_incubator: Passed: 345, Failed: 0
+PASS: tb_incubator
+
+=== tb_incubator_spec ===
+tb_incubator_spec: Passed: 23, Failed: 0
+PASS: tb_incubator_spec
+
+summary: 2/2 passed, 0 failed

@@ -1,0 +1,16 @@
+iverilog: Icarus Verilog version 12.0 (stable) ()
+
+=== tb_booth_multiplier ===
+cycles per multiply: min=5 max=5 (N=8, radix-4 => 4 iterations)
+tb_booth_multiplier: Passed: 65562, Failed: 0
+PASS: tb_booth_multiplier
+
+=== tb_booth_param ===
+measured iteration counts:
+  N=4  : 3 clocks per multiply (radix-2 would need 5)
+  N=8  : 5 clocks per multiply (radix-2 would need 9)
+  N=16 : 9 clocks per multiply (radix-2 would need 17)
+tb_booth_param: Passed: 774, Failed: 0
+PASS: tb_booth_param
+
+summary: 2/2 passed, 0 failed

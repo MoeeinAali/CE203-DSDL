@@ -1,0 +1,11 @@
+iverilog: Icarus Verilog version 12.0 (stable) ()
+
+=== tb_stack ===
+tb_stack: Passed: 2046, Failed: 0
+PASS: tb_stack
+
+=== tb_stack_param ===
+tb_stack_param: Passed: 63, Failed: 0
+PASS: tb_stack_param
+
+summary: 2/2 passed, 0 failed
