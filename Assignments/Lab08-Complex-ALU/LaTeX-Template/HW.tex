@@ -334,4 +334,28 @@ assign finished = halted && !ex_v && !wb_v;
 
 نکته‌ی دوم درباره‌ی تست است. چهار تست‌بنچ این آزمایش هیچ‌کدام نمی‌توانند نشان دهند که قید اصلی رعایت شده است، چون مداری با دو ضرب‌کننده همان جواب‌های درست را در زمان کمتری می‌دهد و همه‌ی آن‌ها را پاس می‌کند. برای ویژگی‌هایی که درباره‌ی {ساختار} مدارند و نه رفتار آن، باید سراغ خود متن رفت؛ به همین دلیل شمارش نمونه‌سازی‌ها به‌عنوان اولین تست به اسکریپت اضافه شد.
 
+\pagebreak
+\subsubsection*{خروجی سنتز (\lr{Quartus Prime})}
+
+طرح روی \lr{Intel Quartus Prime Lite Edition 21.1.0} با موجودیت سطح‌بالای \lr{complex\_cpu} سنتز و Place \& Route شد. دستگاه هدف: \lr{Cyclone V} (\lr{5CGXFC7C7F23C8}).
+
+\begin{center}
+\begin{tabular}{@{}lr@{}}
+\toprule
+{مورد} & {نتیجه} \\
+\midrule
+وضعیت کامپایل & موفق ($0$ خطا، $19$ هشدار) \\
+\lr{Logic utilization (ALMs)} & $699 / 56480$ ($1\%$) \\
+\lr{Total registers} & $1272$ \\
+\lr{Total pins} & $90 / 268$ ($34\%$) \\
+\lr{Block memory bits} & $0$ \\
+\lr{DSP Blocks} & $1 / 156$ ($<1\%$) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}
+\includegraphics[width=\textwidth]{figs/quartus_synthesis.jpg}
+\end{center}
+
 \end{document}
