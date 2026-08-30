@@ -1,13 +1,6 @@
 `timescale 1ns/1ps
 `include "tcam_pkg.vh"
 
-// One 16-bit entry, swept over EVERY possible search word.
-//
-// A 16-bit entry has only 65536 possible search words, so for a given stored
-// pattern the match line can be checked against the model for all of them --
-// no sampling, no random subset. Several patterns are swept this way,
-// including the two extremes: a fully specified pattern (an ordinary CAM
-// entry, exactly one word matches) and an all-X pattern (every word matches).
 module tb_tcam_entry;
     reg                    Clk = 1'b0, RstN = 1'b1;
     reg                    we = 1'b0, wvalid = 1'b1;
@@ -55,11 +48,10 @@ module tb_tcam_entry;
         end
     endtask
 
-    // Sweep every 16-bit search word against one stored pattern.
     task automatic sweep;
         input [`TCAM_WIDTH-1:0] v;
         input [`TCAM_WIDTH-1:0] m;
-        input integer           want_hits;   // -1 = do not check the total
+        input integer           want_hits;  
         begin
             store(v, m, 1'b1);
             hits = 0;
@@ -87,26 +79,15 @@ module tb_tcam_entry;
         repeat (2) @(negedge Clk); RstN = 1'b1;
         @(negedge Clk); #1;
 
-        // An entry that was never written must never match, even though its
-        // cells all hold X.
         chk("entry invalid after reset", q_valid === 1'b0);
         search = 16'hA5A5; #1; chk("invalid entry does not match", match === 1'b0);
         search = 16'h0000; #1; chk("invalid entry does not match zero", match === 1'b0);
 
-        // ---- fully specified: behaves like an ordinary CAM entry ----
         sweep(16'h1234, 16'hFFFF, 1);
-
-        // ---- all X: matches the entire space; only `valid` holds it back ----
         sweep(16'h0000, 16'h0000, 65536);
-
-        // ---- eight care bits: 2^8 = 256 words match ----
         sweep(16'hAB00, 16'hFF00, 256);
-
-        // ---- scattered care bits ----
         sweep(16'h5A5A, 16'h0F0F, 256);
         sweep(16'hFFFF, 16'h8001, 16384);
-
-        // ---- retiring an entry ----
         store(16'h1234, 16'hFFFF, 1'b1);
         search = 16'h1234; #1;
         chk("stored word matches", match === 1'b1);

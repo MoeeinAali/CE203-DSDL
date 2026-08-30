@@ -1,13 +1,6 @@
 `timescale 1ns/1ps
 `include "tcam_pkg.vh"
 
-// Presentation waveform.
-//
-// The six patterns from the lab sheet are written into entries 0..5, then a
-// series of search words is applied. The point of the picture is that one
-// search word can light up several match lines at once, that the priority
-// encoder picks the lowest of them, and that retiring an entry immediately
-// promotes the next one.
 `ifndef VCD_FILE
 `define VCD_FILE "waves/tcam.vcd"
 `endif
@@ -62,23 +55,22 @@ module tb_tcam_wave;
         @(negedge Clk); RstN = 1'b0;
         repeat (2) @(negedge Clk); RstN = 1'b1;
 
-        // the sheet's patterns, high byte marked X throughout
-        store(4'd0, 16'h0068, 16'h0078, 1'b1);   // X1101XXX
-        store(4'd1, 16'h002C, 16'h00AD, 1'b1);   // 0X1X11X0
-        store(4'd2, 16'h0060, 16'h00F0, 1'b1);   // 0110XXXX
-        store(4'd3, 16'h0080, 16'h0080, 1'b1);   // 1XXXXXXX
-        store(4'd4, 16'h006F, 16'h00FF, 1'b1);   // 01101111
-        store(4'd5, 16'h006E, 16'h00FF, 1'b1);   // 01101110
+        store(4'd0, 16'h0068, 16'h0078, 1'b1);  
+        store(4'd1, 16'h002C, 16'h00AD, 1'b1); 
+        store(4'd2, 16'h0060, 16'h00F0, 1'b1); 
+        store(4'd3, 16'h0080, 16'h0080, 1'b1); 
+        store(4'd4, 16'h006F, 16'h00FF, 1'b1);  
+        store(4'd5, 16'h006E, 16'h00FF, 1'b1);  
 
-        look(16'h006E);      // the sheet's data word: entries 0,1,2,5 match
-        look(16'h006F);      // one bit away:          entries 0,2,4 match
-        look(16'h0080);      // only the 1XXXXXXX rule
-        look(16'h0011);      // nothing matches at all
+        look(16'h006E);   
+        look(16'h006F);   
+        look(16'h0080);    
+        look(16'h0011);    
 
-        store(4'd0, 16'h0068, 16'h0078, 1'b0);   // retire the winner
-        look(16'h006E);      // entry 1 is promoted
+        store(4'd0, 16'h0068, 16'h0078, 1'b0);   
+        look(16'h006E);      
 
-        store(4'd0, 16'h0068, 16'h0078, 1'b1);   // bring it back
+        store(4'd0, 16'h0068, 16'h0078, 1'b1); 
         look(16'h006E);
 
         repeat (4) @(negedge Clk);

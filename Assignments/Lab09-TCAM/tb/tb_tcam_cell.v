@@ -1,11 +1,5 @@
 `timescale 1ns/1ps
 
-// The ternary cell, tested exhaustively.
-//
-// A single cell has only three inputs that matter -- the stored value, the
-// stored care bit and the search bit -- so "exhaustive" here means all eight
-// combinations, checked against the truth table written straight out of the
-// definition of the three symbols {0, 1, X}.
 module tb_tcam_cell;
     reg  Clk = 1'b0, RstN = 1'b1, we = 1'b0, d = 1'b0, care = 1'b0, s = 1'b0;
     wire agree, d_q, care_q;
@@ -48,8 +42,6 @@ module tb_tcam_cell;
         repeat (2) @(negedge Clk); RstN = 1'b1;
         @(negedge Clk);
 
-        // After reset the cell holds X, which agrees with anything. This is
-        // exactly why the entry above it needs a validity bit.
         chk("reset stores X (care = 0)", care_q === 1'b0);
         s = 1'b0; #1; chk("reset cell agrees with 0", agree === 1'b1);
         s = 1'b1; #1; chk("reset cell agrees with 1", agree === 1'b1);

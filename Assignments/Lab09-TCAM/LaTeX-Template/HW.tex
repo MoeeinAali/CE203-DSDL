@@ -285,12 +285,29 @@ store_pattern(4'd2, "XXXXXXXX0110XXXX");
 \lstinputlisting[basicstyle=\ttfamily\scriptsize]{figs/test_run_output.txt}
 \end{latin}
 
-\subsubsection*{جمع‌بندی}
 
-\lr{TCAM} از نظر منطقی ساده است — دو فلیپ‌فلاپ و سه گیت به ازای هر بیت — ولی دو نکته‌ی طراحی دارد که هیچ‌کدام از خود فرمول مقایسه بیرون نمی‌آید.
+\pagebreak
+\subsubsection*{خروجی سنتز (\lr{Quartus Prime})}
 
-اول، بیت اعتبار. چون نماد $X$ با {نبود} \lr{care} کدگذاری می‌شود، حالت خالی مدار به‌طور طبیعی «با همه‌چیز منطبق شو» است نه «با هیچ‌چیز منطبق نشو». یعنی امن‌ترین حالت پس از ریست، بدترین حالت رفتاری است، و بیت اعتبار تنها چیزی است که آن را برمی‌گرداند.
+طرح روی \lr{Intel Quartus Prime Lite Edition 21.1.0} با موجودیت سطح‌بالای \lr{tcam} سنتز و Place \& Route شد. دستگاه هدف: \lr{Cyclone V} (\lr{5CGXFC7C7F23C8}).
 
-دوم، اولویت. برخلاف حافظه‌ی معمولی که هر آدرس یک پاسخ دارد، پاسخ \lr{TCAM} می‌تواند چندتایی باشد. این ابهام ذاتی مسئله است، نه اشکال پیاده‌سازی، و باید با یک قرارداد صریح — اینجا «آدرس کوچک‌تر برنده است» — حل شود. خروجی \lr{match\_count} برای همین اضافه شد: بدون آن، تست‌بنچ نمی‌توانست تشخیص دهد که کدگذار اولویت درست کار می‌کند یا فقط اتفاقی خانه‌ی درست را برگردانده است.
+\begin{center}
+\begin{tabular}{@{}lr@{}}
+\toprule
+{مورد} & {نتیجه} \\
+\midrule
+وضعیت کامپایل & موفق ($0$ خطا، $13$ هشدار) \\
+\lr{Logic utilization (ALMs)} & $353 / 56480$ ($<1\%$) \\
+\lr{Total registers} & $528$ \\
+\lr{Total pins} & $119 / 268$ ($44\%$) \\
+\lr{Block memory bits} & $0$ \\
+\lr{DSP Blocks} & $0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}
+\includegraphics[width=\textwidth]{figs/quartus_synthesis.jpg}
+\end{center}
 
 \end{document}

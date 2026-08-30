@@ -1,17 +1,6 @@
 `timescale 1ns/1ps
 `include "tcam_pkg.vh"
 
-// The whole 16 x 16 TCAM against a reference model.
-//
-// The model is three lines of behavioural code with no cells, no priority
-// encoder and no popcount tree, so it cannot repeat a structural mistake the
-// design makes. It is driven with random contents AND random searches,
-// because the interesting behaviour of a TCAM is what happens when stored
-// patterns OVERLAP -- and overlap is exactly what a hand-written set of test
-// vectors tends to avoid.
-//
-// One configuration is also swept over all 65536 possible search words, so at
-// least one complete map of the match space is verified rather than sampled.
 module tb_tcam;
     reg                      Clk = 1'b0, RstN = 1'b1;
     reg                      we = 1'b0, wvalid = 1'b1;
@@ -41,7 +30,6 @@ module tb_tcam;
     integer pass = 0, fail = 0;
     integer c, e, w, seed;
 
-    // model copy of the contents
     reg [`TCAM_WIDTH-1:0] m_val  [0:`TCAM_ENTRIES-1];
     reg [`TCAM_WIDTH-1:0] m_mask [0:`TCAM_ENTRIES-1];
     reg [`TCAM_ENTRIES-1:0] m_vld;
@@ -81,7 +69,6 @@ module tb_tcam;
         end
     endtask
 
-    // Recompute what the TCAM should report for the current `search`.
     task automatic model;
         integer g;
         begin
@@ -107,7 +94,6 @@ module tb_tcam;
             chk("match lines", match       === exp_match);
             chk("hit",         hit         === exp_hit);
             chk("count",       match_count === exp_count);
-            // The winning address is only defined when something matched.
             if (exp_hit) chk("priority address", match_addr === exp_addr);
         end
     endtask
@@ -124,13 +110,11 @@ module tb_tcam;
         end
         #1;
 
-        // ---- an empty TCAM must be silent, despite every cell holding X ----
         probe(16'h0000);
         probe(16'hFFFF);
         probe(16'h5A5A);
         chk("empty TCAM never hits", hit === 1'b0 && match_count === 5'd0);
 
-        // ---- write-back check on the stored contents ----
         store(4'd7, 16'h1234, 16'hFF0F, 1'b1);
         dbg_addr = 4'd7; #1;
         chk("value stored", dbg_value === 16'h1234);
@@ -139,12 +123,9 @@ module tb_tcam;
         dbg_addr = 4'd6; #1;
         chk("neighbouring entry untouched", dbg_valid === 1'b0);
 
-        // ---- random contents, random searches ----
         seed = 32'd90909;
         for (c = 0; c < 60; c = c + 1) begin
             for (e = 0; e < `TCAM_ENTRIES; e = e + 1) begin
-                // Masks are biased towards having many X positions, which is
-                // what makes entries overlap and the priority encoder matter.
                 store(e[`TCAM_AW-1:0],
                       $random(seed),
                       {$random(seed)} & {$random(seed)},
@@ -154,7 +135,6 @@ module tb_tcam;
                 probe($random(seed));
         end
 
-        // ---- one configuration swept over the entire search space ----
         for (e = 0; e < `TCAM_ENTRIES; e = e + 1)
             store(e[`TCAM_AW-1:0],
                   $random(seed),

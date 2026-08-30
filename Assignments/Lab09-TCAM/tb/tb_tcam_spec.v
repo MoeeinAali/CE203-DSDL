@@ -1,18 +1,6 @@
 `timescale 1ns/1ps
 `include "tcam_pkg.vh"
 
-// Direct checks against the lab sheet, with no reference model involved.
-//
-// Patterns are written here as TEXT, in the same {0, 1, X} notation the sheet
-// uses, and converted to a value/mask pair by the testbench. That keeps the
-// checks readable next to the sheet and makes the value/mask encoding itself
-// part of what is being verified: if the encoding were wrong, the worked
-// example from the sheet would stop matching.
-//
-// The sheet's example is 8 bits wide and this TCAM is 16, so each pattern is
-// written with its high byte marked entirely as X. That is not a workaround --
-// it is the ordinary way a narrow rule is stored in a wider TCAM, and it gets
-// checked here by searching with two different high bytes.
 module tb_tcam_spec;
     reg                      Clk = 1'b0, RstN = 1'b1;
     reg                      we = 1'b0, wvalid = 1'b1;
@@ -67,8 +55,6 @@ module tb_tcam_spec;
         end
     endtask
 
-    // Store a pattern written as 16 characters of '0', '1' or 'X'.
-    // The leftmost character is the most significant bit.
     task automatic store_pattern;
         input [`TCAM_AW-1:0] a;
         input [8*`TCAM_WIDTH-1:0] pat;
@@ -79,14 +65,13 @@ module tb_tcam_spec;
             v = {`TCAM_WIDTH{1'b0}};
             m = {`TCAM_WIDTH{1'b0}};
             for (i = 0; i < `TCAM_WIDTH; i = i + 1) begin
-                ch = pat[8*(`TCAM_WIDTH-1-i) +: 8];      // i-th character
+                ch = pat[8*(`TCAM_WIDTH-1-i) +: 8];     
                 if (ch == "1") begin
                     v[`TCAM_WIDTH-1-i] = 1'b1;
                     m[`TCAM_WIDTH-1-i] = 1'b1;
                 end else if (ch == "0") begin
-                    m[`TCAM_WIDTH-1-i] = 1'b1;           // value stays 0
+                    m[`TCAM_WIDTH-1-i] = 1'b1;         
                 end
-                // anything else is X: care stays 0
             end
             store(a, v, m, 1'b1);
         end
@@ -104,21 +89,13 @@ module tb_tcam_spec;
         repeat (2) @(negedge Clk); RstN = 1'b1;
         @(negedge Clk); #1;
 
-        // ================================================================
-        // The worked example from the lab sheet.
-        //
-        //   searching for 01101110, the sheet says these three are matches:
-        //       X1101XXX     0X1X11X0     0110XXXX
-        // ================================================================
-        store_pattern(4'd0, "XXXXXXXXX1101XXX");    // sheet: match
-        store_pattern(4'd1, "XXXXXXXX0X1X11X0");    // sheet: match
-        store_pattern(4'd2, "XXXXXXXX0110XXXX");    // sheet: match
-        store_pattern(4'd3, "XXXXXXXX1XXXXXXX");    // MSB is wrong: no match
-        store_pattern(4'd4, "XXXXXXXX01101111");    // differs in the last bit
-        store_pattern(4'd5, "XXXXXXXX01101110");    // exact copy of the data
+        store_pattern(4'd0, "XXXXXXXXX1101XXX");   
+        store_pattern(4'd1, "XXXXXXXX0X1X11X0");  
+        store_pattern(4'd2, "XXXXXXXX0110XXXX");  
+        store_pattern(4'd3, "XXXXXXXX1XXXXXXX");  
+        store_pattern(4'd4, "XXXXXXXX01101111"); 
+        store_pattern(4'd5, "XXXXXXXX01101110");   
 
-        // check the value/mask encoding of the first pattern by hand:
-        //   X 1 1 0 1 X X X  ->  care = 01111000, value = 01101000
         dbg_addr = 4'd0; #1;
         chk("pattern X1101XXX encodes to mask 0x0078", dbg_mask  === 16'h0078);
         chk("pattern X1101XXX encodes to value 0x0068", dbg_value === 16'h0068);
@@ -134,16 +111,12 @@ module tb_tcam_spec;
         chk("there was a hit",              hit === 1'b1);
         chk("lowest matching index wins",   match_addr === 4'd0);
 
-        // The high byte of every pattern is X, so it really is ignored.
         look(16'hFF6E);
         chk("high byte is don't-care: same match lines",
             match[5:0] === 6'b100111 && match_count === 5'd4);
         look(16'h5A6E);
         chk("high byte is don't-care: any value works", match_count === 5'd4);
 
-        // ================================================================
-        // A neighbouring data word: 01101111 differs only in the last bit.
-        // ================================================================
         look(16'h006F);
         chk("X1101XXX still matches 01101111", match[0] === 1'b1);
         chk("0X1X11X0 rejects it (last bit must be 0)", match[1] === 1'b0);
@@ -152,10 +125,6 @@ module tb_tcam_spec;
         chk("01101110 no longer matches",      match[5] === 1'b0);
         chk("three entries matched",           match_count === 5'd3);
 
-        // ================================================================
-        // Priority is lowest index wins, and retiring the winner promotes
-        // the next one.
-        // ================================================================
         look(16'h006E);
         chk("winner is entry 0", match_addr === 4'd0);
         store(4'd0, 16'h0068, 16'h0078, 1'b0);       // retire entry 0
@@ -167,9 +136,6 @@ module tb_tcam_spec;
         chk("re-validating restores the winner", match_addr === 4'd0);
         chk("and the match count",               match_count === 5'd4);
 
-        // ================================================================
-        // The two extremes of a ternary entry.
-        // ================================================================
         store_pattern(4'd15, "XXXXXXXXXXXXXXXX");    // all X
         look(16'h0000);  chk("all-X entry matches 0x0000", match[15] === 1'b1);
         look(16'hFFFF);  chk("all-X entry matches 0xFFFF", match[15] === 1'b1);
@@ -179,15 +145,10 @@ module tb_tcam_spec;
         look(16'h0F0F);  chk("exact entry matches its word",  match[14] === 1'b1);
         look(16'h0F0E);  chk("exact entry rejects a neighbour", match[14] === 1'b0);
 
-        // The validity bit is what keeps an all-X entry from swallowing every
-        // search: without it, an unprogrammed TCAM would match everything.
         store(4'd15, 16'h0000, 16'h0000, 1'b0);
         look(16'hA5A5);
         chk("retired all-X entry is silent", match[15] === 1'b0);
 
-        // ================================================================
-        // Nothing at all matches -> no hit.
-        // ================================================================
         @(negedge Clk); RstN = 1'b0;
         repeat (2) @(negedge Clk); RstN = 1'b1;
         @(negedge Clk);

@@ -1,28 +1,5 @@
 `include "tcam_pkg.vh"
 
-// A 16-entry, 16-bit-wide ternary CAM.
-//
-// Ports
-// -----
-// Write side: one entry at a time, given its value bits, its care mask and
-// the validity bit. Writing wvalid = 0 retires an entry without having to
-// clear its contents.
-//
-// Search side: purely combinational. `search` goes in, all sixteen entries
-// are compared simultaneously, and three things come out:
-//
-//     match        the raw match lines, one per entry
-//     hit / addr   the winning entry under lowest-index-wins priority
-//     match_count  HOW MANY entries matched
-//
-// match_count is not decoration. In a TCAM overlapping rules are expected, so
-// the difference between "one rule covers this word" and "four rules do" is
-// real information -- and it is the only way a testbench can tell a correct
-// priority encoder from one that happens to pick the right entry by luck.
-//
-// On an FPGA the outputs would normally be registered to make timing closure
-// easy. That is left out here so the module is exactly the associative lookup
-// the lab sheet describes, with nothing else in the way.
 module tcam (
     input  wire                       Clk,
     input  wire                       RstN,
