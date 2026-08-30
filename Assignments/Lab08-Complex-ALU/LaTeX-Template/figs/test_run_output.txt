@@ -1,0 +1,30 @@
+=== resource check (one adder, one multiplier) ===
+  mul_unit instantiated 1 time
+  add_unit instantiated 1 time
+  complex_alu instantiated 1 time
+PASS: resource check
+
+iverilog: Icarus Verilog version 12.0 (stable) ()
+
+=== tb_complex_addsub ===
+tb_complex_addsub: Passed: 42371, Failed: 0
+PASS: tb_complex_addsub
+
+=== tb_complex_mul ===
+tb_complex_mul: Passed: 22688, Failed: 0
+PASS: tb_complex_mul
+
+=== tb_complex_cpu ===
+  demo program: 8 instructions in 30 cycles
+tb_complex_cpu: Passed: 1533, Failed: 0
+PASS: tb_complex_cpu
+
+=== tb_complex_cpu_spec ===
+  16 independent single-cycle instructions: 19 cycles
+  16 independent multiplies:                102 cycles
+  16 dependent multiplies:                  117 cycles
+  cost of the interlock: 15 cycles over 15 dependent pairs
+tb_complex_cpu_spec: Passed: 18, Failed: 0
+PASS: tb_complex_cpu_spec
+
+summary: 5/5 passed, 0 failed

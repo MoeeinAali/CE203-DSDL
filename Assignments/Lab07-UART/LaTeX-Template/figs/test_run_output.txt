@@ -1,0 +1,15 @@
+iverilog: Icarus Verilog version 12.0 (stable) ()
+
+=== tb_uart_tx ===
+tb_uart_tx: Passed: 4108, Failed: 0
+PASS: tb_uart_tx
+
+=== tb_uart_rx ===
+tb_uart_rx: Passed: 1290, Failed: 0
+PASS: tb_uart_rx
+
+=== tb_uart_link ===
+tb_uart_link: Passed: 436, Failed: 0
+PASS: tb_uart_link
+
+summary: 3/3 passed, 0 failed

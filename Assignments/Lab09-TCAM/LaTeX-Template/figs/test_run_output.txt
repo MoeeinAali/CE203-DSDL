@@ -1,0 +1,19 @@
+iverilog: Icarus Verilog version 12.0 (stable) ()
+
+=== tb_tcam_cell ===
+tb_tcam_cell: Passed: 20, Failed: 0
+PASS: tb_tcam_cell
+
+=== tb_tcam_entry ===
+tb_tcam_entry: Passed: 327691, Failed: 0
+PASS: tb_tcam_entry
+
+=== tb_tcam ===
+tb_tcam: Passed: 300532, Failed: 0
+PASS: tb_tcam
+
+=== tb_tcam_spec ===
+tb_tcam_spec: Passed: 32, Failed: 0
+PASS: tb_tcam_spec
+
+summary: 4/4 passed, 0 failed
