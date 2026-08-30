@@ -273,4 +273,28 @@ $N$ & {پایه ۲ / \lr{Shift \& Add}} & {پایه ۴ (این طراحی)} & {�
 
 درباره‌ی شرط تسریع، استفاده از بوث پایه ۴ باعث شد تعداد کلاک‌ها از $N+1$ به $N/2+1$ کاهش پیدا کند، یعنی حدود دو برابر سریع‌تر. البته این تسریع رایگان نیست: در ازای آن باید یک جمع‌کننده‌ی پهن‌تر و منطق انتخاب پنج‌حالته برای مضرب‌ها پرداخت شود، که مصالحه‌ی همیشگی {سرعت در برابر سطح} است.
 
+\pagebreak
+\subsubsection*{خروجی سنتز (\lr{Quartus Prime})}
+
+طرح روی \lr{Intel Quartus Prime Lite Edition 21.1.0} با موجودیت سطح‌بالای \lr{booth\_multiplier} سنتز و Place \& Route شد. دستگاه هدف: \lr{Cyclone V} (\lr{5CGXFC7C7F23C8}).
+
+\begin{center}
+\begin{tabular}{@{}lr@{}}
+\toprule
+{مورد} & {نتیجه} \\
+\midrule
+وضعیت کامپایل & موفق ($0$ خطا، $13$ هشدار) \\
+\lr{Logic utilization (ALMs)} & $28 / 56480$ ($<1\%$) \\
+\lr{Total registers} & $30$ \\
+\lr{Total pins} & $37 / 268$ ($14\%$) \\
+\lr{Block memory bits} & $0$ \\
+\lr{DSP Blocks} & $0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}
+\includegraphics[width=\textwidth]{figs/quartus_synthesis.jpg}
+\end{center}
+
 \end{document}
