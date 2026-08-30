@@ -1,5 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1786309084.76647 "HW.tex" "HW.pdf" "HW" 1786309085.11436 2
+["pdflatex"] 1788075634.40324 "/Users/moeein/Desktop/CE203-DSDL/Assignments/Lab03-Dataflow-Comparators/LaTeX-Template/HW.tex" "HW.pdf" "HW" 1788075634.76617 2
+  "/Users/moeein/Desktop/CE203-DSDL/Assignments/Lab03-Dataflow-Comparators/LaTeX-Template/HW.tex" 1788075633.7099 11128 e6fa3006360d4b8b6299384bf0b5bf3a ""
   "/usr/local/texlive/2025/texmf-dist/tex/generic/atbegshi/atbegshi.sty" 1575674566 24708 5584a51a7101caf7e6bbf1fc27d8f7b1 ""
   "/usr/local/texlive/2025/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty" 1576625341 40635 c40361e206be584d448876bba8a64a3b ""
   "/usr/local/texlive/2025/texmf-dist/tex/generic/bitset/bitset.sty" 1576016050 33961 6b5c75130e435b2bfdb9f480a09a39f9 ""
@@ -67,6 +68,7 @@
   "/usr/local/texlive/2025/texmf-dist/tex/latex/graphics-cfg/color.cfg" 1459978653 1213 620bba36b25224fa9b7e1ccb4ecb76fd ""
   "/usr/local/texlive/2025/texmf-dist/tex/latex/graphics-cfg/graphics.cfg" 1465944070 1224 978390e9c2234eab29404bc21b268d1e ""
   "/usr/local/texlive/2025/texmf-dist/tex/latex/graphics-def/pdftex.def" 1713382759 19440 9da9dcbb27470349a580fca7372d454b ""
+  "/usr/local/texlive/2025/texmf-dist/tex/latex/graphics-def/xetex.def" 1663965824 14788 1dde73f396dd97d88c838bee2a352abe ""
   "/usr/local/texlive/2025/texmf-dist/tex/latex/graphics/dvipsnam.def" 1717359999 5009 1ca6c92de20f17acac654d4e0598c200 ""
   "/usr/local/texlive/2025/texmf-dist/tex/latex/graphics/graphics.sty" 1730496337 18363 dee506cb8d56825d8a4d020f5d5f8704 ""
   "/usr/local/texlive/2025/texmf-dist/tex/latex/graphics/graphicx.sty" 1717359999 8010 6f2ad8c2b2ffbd607af6475441c7b5e4 ""
@@ -109,9 +111,9 @@
   "/usr/local/texlive/2025/texmf-dist/web2c/texmf.cnf" 1739380943 42148 61becc7c670cd061bb319c643c27fdd4 ""
   "/usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1741450574 3345740 46b66fdb0378f7bf5921b5eabf1762b8 ""
   "/usr/local/texlive/2025/texmf.cnf" 1741450484 577 418a7058ec8e006d8704f60ecd22c938 ""
-  "HW.aux" 1786309084.76569 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
-  "HW.tex" 1786309081.51001 10339 d1e99d0f8b9d44f8b1cec97354ea17a1 ""
-  "commons/course.sty" 1786301780.2306 7668 f92bc7b9d25e4e1f14553e3a90eac447 ""
+  "HW.aux" 1788075634.40289 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
+  "HW.tex" 1788075633.7099 11128 e6fa3006360d4b8b6299384bf0b5bf3a ""
+  "commons/course.sty" 1787393998.50837 7668 f92bc7b9d25e4e1f14553e3a90eac447 ""
   (generated)
   "HW.aux"
   "HW.log"

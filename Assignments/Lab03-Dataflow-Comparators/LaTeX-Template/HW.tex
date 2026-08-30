@@ -224,4 +224,28 @@ $\mathrm{GT}$, $\mathrm{EQ}$, $\mathrm{LT}$ & خروجی & ۱ & نتیجه‌ی 
 \lstinputlisting[basicstyle=\ttfamily\scriptsize]{figs/test_run_output.txt}
 \end{latin}
 
+\pagebreak
+\subsubsection*{خروجی سنتز (\lr{Quartus Prime})}
+
+نسخه‌ی B (\lr{serial\_comparator\_assign}) روی \lr{Intel Quartus Prime Lite Edition 21.1.0} به‌عنوان موجودیت سطح‌بالا سنتز و Place \& Route شد. دستگاه هدف: \lr{Cyclone V} (\lr{5CGXFC7C7F23C8}).
+
+\begin{center}
+\begin{tabular}{@{}lr@{}}
+\toprule
+{مورد} & {نتیجه} \\
+\midrule
+وضعیت کامپایل & موفق ($0$ خطا، $15$ هشدار) \\
+\lr{Logic utilization (ALMs)} & $4 / 56480$ ($<1\%$) \\
+\lr{Total registers} & $0$ \\
+\lr{Total pins} & $7 / 268$ ($3\%$) \\
+\lr{Block memory bits} & $0$ \\
+\lr{DSP Blocks} & $0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}
+\includegraphics[width=\textwidth]{figs/quartus_synthesis.jpg}
+\end{center}
+
 \end{document}
