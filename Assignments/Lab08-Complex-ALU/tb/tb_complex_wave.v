@@ -1,16 +1,6 @@
 `timescale 1ns/1ps
 `include "complex_pkg.vh"
 
-// Presentation waveform: the demo program running through the pipeline.
-//
-//   r1 = 3 + 4j
-//   r2 = 1 - 2j
-//   r3 = r1 * r2  = 11 - 2j
-//   r4 = r1 + r2  =  4 + 2j
-//   r5 = r3 - r4  =  7 - 4j
-//   r6 = r5 * r1  = 37 + 16j
-//   r7 = r6
-//   halt
 `ifndef VCD_FILE
 `define VCD_FILE "waves/complex_cpu.vcd"
 `endif

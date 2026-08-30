@@ -1,17 +1,6 @@
 `timescale 1ns/1ps
 `include "complex_pkg.vh"
 
-// Part (c): the pipelined machine, compared against a reference model.
-//
-// The model is a plain sequential interpreter of the same program: it has no
-// pipeline, no stalls and no shared units, so agreeing with it means the
-// pipeline's interlocks and forwarding produce exactly the result of running
-// the instructions one at a time.
-//
-// Most of the work is done by RANDOM PROGRAMS. Hand-written programs only
-// cover the hazard patterns their author thought of; a few hundred random ones
-// cover dependency chains, register reuse and operand aliasing that nobody
-// would think to write down.
 module tb_complex_cpu;
     reg                 Clk = 1'b0, RstN = 1'b1, run_en = 1'b0;
     reg                 prog_we = 1'b0;
@@ -196,11 +185,6 @@ module tb_complex_cpu;
         repeat (3) @(negedge Clk); RstN = 1'b1;
 
         // ------------------------------------------------- a demo program --
-        // r1 = 3 + 4j ; r2 = 1 - 2j
-        // r3 = r1 * r2  = 11 - 2j
-        // r4 = r1 + r2  =  4 + 2j
-        // r5 = r3 - r4  =  7 - 4j
-        // r6 = r5 * r1  = 37 + 16j
         fill_halt;
         prog[0] = enc(`OP_LDI, 3'd1, 3'd0, 3'd0, {8'sd4, 8'sd3});
         prog[1] = enc(`OP_LDI, 3'd2, 3'd0, 3'd0, {-8'sd2, 8'sd1});

@@ -1,29 +1,5 @@
 `include "complex_pkg.vh"
 
-// Part (c) of the lab: the machine that reads instructions out of the 32-word
-// memory and executes them in a pipeline.
-//
-// Stages
-// ------
-//   IF   read imem at PC, register the instruction
-//   ID   decode, read the register file, resolve hazards
-//   EX   the shared complex ALU -- 2 or 4 cycles of work, or one cycle for the
-//        instructions that need no arithmetic at all (LDI / MOV / NOP)
-//   WB   write the result back
-//
-// The interesting consequence of the single-adder / single-multiplier rule is
-// that EX cannot itself be pipelined: there is one multiplier, so only one
-// product can be in flight at a time. IF, ID and WB still overlap with EX --
-// while a multiply is grinding away, the next instruction is already fetched
-// and decoded and the previous result is being written back -- but EX is the
-// throughput limit by construction, not by accident.
-//
-// Two interlocks keep that correct:
-//   * EX accepts a new instruction only when it is free (or freeing this
-//     cycle), so a long operation stalls decode and fetch behind it;
-//   * an instruction whose source register is still being produced in EX waits
-//     in ID. Once the producer reaches WB the value is forwarded straight into
-//     the decode stage, so the wait is exactly as long as it has to be.
 module complex_cpu (
     input  wire                    Clk,
     input  wire                    RstN,
@@ -117,22 +93,12 @@ module complex_cpu (
 
     assign ex_busy = ex_v;
 
-    // `halted` only means the fetch stage stopped: the last instruction may
-    // still be in EX, and its result may still be sitting in the write-back
-    // register waiting for the next clock edge. Anything that reads the
-    // register file when the program ends must wait for `finished`, which
-    // additionally requires the pipeline to be empty. (wb_v high means the
-    // write lands on the coming edge, so it has to be clear too.)
     assign finished = halted && !ex_v && !wb_v;
 
     // ------------------------------------------------------------- control --
     wire ex_completing = ex_v && (!ex_is_alu || alu_done);
     wire ex_can_accept = !ex_v || ex_completing;
 
-    // A source register still being produced in EX is not readable yet. The
-    // instruction waits in ID; once the producer moves on to WB the forward
-    // above supplies the value, so the stall lasts exactly one cycle longer
-    // than the producer's own execution.
     wire hazard = ex_v && ex_writes &&
                   ((id_uses_rs && ex_rd == id_rs) ||
                    (id_uses_rt && ex_rd == id_rt));
@@ -174,8 +140,6 @@ module complex_cpu (
                 ex_v <= 1'b0;
             end
 
-            // ---- ID -> EX (written after the block above so that an
-            //      instruction can enter EX in the very cycle it frees up) ----
             if (id_go && !id_is_halt) begin
                 ex_v      <= 1'b1;
                 ex_is_alu <= id_is_alu;

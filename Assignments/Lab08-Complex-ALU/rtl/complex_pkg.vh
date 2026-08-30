@@ -1,25 +1,3 @@
-// Shared definitions for the complex-number machine.
-//
-// Number representation
-// --------------------
-// A complex value is a pair of 8-bit SIGNED two's-complement components packed
-// into one 16-bit word:
-//
-//     word = { imag[7:0], real[7:0] }        range of each part: -128 .. +127
-//
-// Results are SATURATED, not wrapped: a component that leaves the range is
-// clamped to -128 or +127 and a flag is raised. For a machine whose whole job
-// is arithmetic on measured quantities this is the useful behaviour -- a value
-// that is too large should read as "very large", not silently change sign.
-//
-// Instruction word (32 bits, one memory word)
-// -------------------------------------------
-//     [31:28] opcode
-//     [27:25] rd
-//     [24:22] rs
-//     [21:19] rt
-//     [18:16] unused
-//     [15:0]  immediate, itself a complex word { imag, real }
 `ifndef COMPLEX_PKG_VH
 `define COMPLEX_PKG_VH
 

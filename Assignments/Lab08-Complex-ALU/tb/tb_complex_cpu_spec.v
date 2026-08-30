@@ -1,20 +1,6 @@
 `timescale 1ns/1ps
 `include "complex_pkg.vh"
 
-// Structural checks on the machine, aimed at the claims the reference-model
-// testbench cannot make.
-//
-// A model comparison proves the machine computes the right numbers. It says
-// nothing about WHY it takes the time it takes, and a machine that quietly
-// executed every instruction one at a time would pass it just as well. The
-// checks here are about the pipeline itself:
-//
-//   * instructions really do overlap  -- a run of independent single-cycle
-//     instructions costs about one cycle each, which is impossible without
-//     fetch, decode and write-back running underneath execute;
-//   * the shared ALU really is the throughput limit for arithmetic;
-//   * the interlock costs exactly as much as it must and no more;
-//   * nothing is executed after HALT, and nothing is written twice.
 module tb_complex_cpu_spec;
     reg                 Clk = 1'b0, RstN = 1'b1, run_en = 1'b0;
     reg                 prog_we = 1'b0;
@@ -44,13 +30,9 @@ module tb_complex_cpu_spec;
     reg [`IW-1:0] prog [0:`MEM_WORDS-1];
     reg [`CX_WORD-1:0] tmp;
 
-    // Count every register write the machine performs.
     integer wcount = 0;
     always @(posedge Clk) if (run_en && wb_we) wcount = wcount + 1;
 
-    // The ALU is a single shared resource: it must never be busy while the
-    // execute stage claims to be empty, and vice versa a busy ALU must always
-    // belong to the one instruction sitting in EX.
     always @(posedge Clk)
         if (RstN && run_en && alu_busy && !ex_busy) begin
             $display("  FAIL @%0t: the ALU is running with no instruction in EX", $time);
@@ -106,8 +88,6 @@ module tb_complex_cpu_spec;
             wcount = 0;
             run_en = 1'b1;
             c = 0;
-            // `finished` (not `halted`) is the safe point to read results:
-            // it also requires the last write-back to have landed.
             while (!finished && c < 4000) begin
                 @(negedge Clk);
                 c = c + 1;
@@ -129,11 +109,6 @@ module tb_complex_cpu_spec;
         @(negedge Clk); RstN = 1'b0;
         repeat (3) @(negedge Clk); RstN = 1'b1;
 
-        // ---------------------------------------------------------------
-        // A) 16 independent single-cycle instructions.
-        //    Without overlap this would cost at least 3 cycles each (fetch,
-        //    decode, execute). Coming in near 1 cycle each is the pipeline.
-        // ---------------------------------------------------------------
         fill_halt;
         for (i = 0; i < 16; i = i + 1)
             prog[i] = enc(`OP_LDI, i[2:0], 3'd0, 3'd0, {8'd0, i[7:0]});
@@ -145,11 +120,6 @@ module tb_complex_cpu_spec;
         rd_hw(3'd7, tmp);
         chk("last LDI landed", tmp === {8'd0, 8'd15});
 
-        // ---------------------------------------------------------------
-        // B) 16 independent multiplies. Each one needs the single multiplier
-        //    for four cycles, so this is the cost of the resource constraint,
-        //    not of the pipeline.
-        // ---------------------------------------------------------------
         fill_halt;
         prog[0] = enc(`OP_LDI, 3'd1, 3'd0, 3'd0, {8'sd1, 8'sd2});
         prog[1] = enc(`OP_LDI, 3'd2, 3'd0, 3'd0, {8'sd1, 8'sd1});
@@ -161,10 +131,6 @@ module tb_complex_cpu_spec;
         chk("multiplies are limited by the shared multiplier", cyc_mul_indep > 4*16);
         chk("all 18 results were written",                     wcount == 18);
 
-        // ---------------------------------------------------------------
-        // C) the same 16 multiplies, but each one consuming the previous
-        //    result. The interlock must add stalls on top of B.
-        // ---------------------------------------------------------------
         fill_halt;
         prog[0] = enc(`OP_LDI, 3'd1, 3'd0, 3'd0, {8'sd0, 8'sd1});
         prog[1] = enc(`OP_LDI, 3'd2, 3'd0, 3'd0, {8'sd1, 8'sd1});
@@ -175,21 +141,13 @@ module tb_complex_cpu_spec;
         $display("  16 dependent multiplies:                  %0d cycles", cyc_mul_dep);
         chk("a dependency chain costs more than independent work",
             cyc_mul_dep > cyc_mul_indep);
-        // 16 multiplies form 15 dependent pairs, and the interlock costs
-        // exactly one cycle for each: the consumer waits in decode for the
-        // cycle in which the producer moves from execute to write-back, and
-        // is then served by the forward.
         $display("  cost of the interlock: %0d cycles over %0d dependent pairs",
                  cyc_mul_dep - cyc_mul_indep, 15);
         chk("the interlock costs exactly one cycle per dependent pair",
             (cyc_mul_dep - cyc_mul_indep) == 15);
-        // r1 = 1 (real), so multiplying by it repeatedly must not change r2
         rd_hw(3'd2, tmp);
         chk("x * 1 repeated 16 times is still x", tmp === {8'sd1, 8'sd1});
 
-        // ---------------------------------------------------------------
-        // D) NOPs are real bubbles: they occupy the pipeline but write nothing.
-        // ---------------------------------------------------------------
         fill_halt;
         prog[0] = enc(`OP_LDI, 3'd1, 3'd0, 3'd0, {8'sd7, 8'sd7});
         for (i = 1; i < 12; i = i + 1)
@@ -200,9 +158,6 @@ module tb_complex_cpu_spec;
         rd_hw(3'd1, tmp);
         chk("the LDI before the NOPs still landed", tmp === {8'sd7, 8'sd7});
 
-        // ---------------------------------------------------------------
-        // E) HALT really stops the machine: nothing after it is fetched.
-        // ---------------------------------------------------------------
         fill_halt;
         prog[0] = enc(`OP_LDI,  3'd1, 3'd0, 3'd0, {8'sd3, 8'sd3});
         prog[1] = enc(`OP_HALT, 3'd0, 3'd0, 3'd0, 16'd0);
@@ -215,15 +170,10 @@ module tb_complex_cpu_spec;
         rd_hw(3'd2, tmp); chk("r2 after HALT untouched", tmp === 16'd0);
         rd_hw(3'd3, tmp); chk("r3 after HALT untouched", tmp === 16'd0);
 
-        // the program counter must stay put once halted
         writes = pc;
         repeat (10) @(negedge Clk);
         chk("PC frozen after HALT", pc === writes[`MEM_AW-1:0]);
 
-        // ---------------------------------------------------------------
-        // F) an operand that is also the destination must still read the OLD
-        //    value: rd is written only at write-back.
-        // ---------------------------------------------------------------
         fill_halt;
         prog[0] = enc(`OP_LDI, 3'd1, 3'd0, 3'd0, {8'sd0, 8'sd3});   // 3
         prog[1] = enc(`OP_ADD, 3'd1, 3'd1, 3'd1, 16'd0);            // 6

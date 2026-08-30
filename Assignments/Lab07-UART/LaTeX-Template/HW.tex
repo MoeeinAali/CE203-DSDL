@@ -333,4 +333,31 @@ if (os == OS/2 - 1)  // right: counting 0..OS/2-1 is exactly OS/2 ticks
 \lstinputlisting[basicstyle=\ttfamily\scriptsize]{figs/test_run_output.txt}
 \end{latin}
 
+\pagebreak
+\subsubsection*{خروجی سنتز (\lr{Quartus Prime})}
+
+طرح روی \lr{Intel Quartus Prime Lite Edition 21.1.0} با موجودیت سطح‌بالای \lr{uart\_link} (دو نمونه‌ی \lr{uart} در \lr{uart\_link}) سنتز و Place \& Route شد. دستگاه هدف: \lr{Cyclone V} (\lr{5CGXFC7C7F23C8}).
+
+\begin{center}
+\begin{tabular}{@{}lr@{}}
+\toprule
+{مورد} & {نتیجه} \\
+\midrule
+وضعیت کامپایل & موفق ($0$ خطا، $14$ هشدار) \\
+\lr{Logic utilization (ALMs)} & $96 / 56480$ ($<1\%$) \\
+\lr{Total registers} & $150$ \\
+\lr{Total pins} & $60 / 268$ ($22\%$) \\
+\lr{Block memory bits} & $0$ \\
+\lr{DSP Blocks} & $0$ \\
+\lr{Worst-case setup slack} & $-0.674$ \\
+\lr{Worst-case hold slack} & $+0.166$ \\
+\lr{Min pulse width slack} & $-0.091$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}
+\includegraphics[width=\textwidth]{figs/quartus_synthesis.jpg}
+\end{center}
+
 \end{document}

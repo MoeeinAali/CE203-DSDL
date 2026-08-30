@@ -1,15 +1,6 @@
 `timescale 1ns/1ps
 `include "complex_pkg.vh"
 
-// Part (a): complex addition and subtraction.
-//
-// The DUT is complex_alu in its ADD / SUB modes. Results are compared against
-// a model written in plain integer arithmetic -- no shift registers, no state
-// machine, nothing the design and the model could get wrong together.
-//
-// Coverage: every combination of nine corner values on each of the four
-// components (both operations), plus a random sweep, plus a check that the
-// operation really takes the number of cycles the schedule promises.
 module tb_complex_addsub;
     reg                 Clk = 1'b0, RstN = 1'b1;
     reg                 start = 1'b0;

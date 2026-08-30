@@ -1,17 +1,6 @@
 `timescale 1ns/1ps
 `include "complex_pkg.vh"
 
-// Part (b): complex multiplication.
-//
-// Same DUT, MUL mode. The model computes
-//     (ar + j*ai)(br + j*bi) = (ar*br - ai*bi) + j(ar*bi + ai*br)
-// in plain integer arithmetic and then clamps, so it shares nothing with the
-// four-cycle schedule inside the design.
-//
-// Besides the numeric sweep this testbench pins down two structural claims:
-// the multiply really costs four cycles (one per product), and the ALU is
-// never asked to start a second operation while the first is running -- which
-// is the whole point of having a single multiplier.
 module tb_complex_mul;
     reg                 Clk = 1'b0, RstN = 1'b1;
     reg                 start = 1'b0;
@@ -31,8 +20,6 @@ module tb_complex_mul;
     integer cyc  = 0;
     always @(posedge Clk) cyc = cyc + 1;
 
-    // Continuous invariant: a new operation must never be started while the
-    // shared units are still busy with the previous one.
     always @(posedge Clk)
         if (RstN && start && busy) begin
             $display("  FAIL @%0t: start asserted while the ALU is busy", $time);

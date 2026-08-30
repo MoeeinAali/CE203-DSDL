@@ -1,35 +1,5 @@
 `include "complex_pkg.vh"
 
-// Parts (a) and (b) of the lab: complex add/subtract and complex multiply.
-//
-// Why they are ONE module
-// -----------------------
-// The lab sheet says no adder or multiplier unit may be used more than once in
-// the finished machine. Complex multiplication needs four real products and two
-// real additions:
-//
-//     (ar + j*ai)(br + j*bi) = (ar*br - ai*bi) + j(ar*bi + ai*br)
-//
-// and complex addition needs two more real additions. If add/subtract and
-// multiply were separate modules, the top level would contain two adders --
-// exactly what the constraint forbids. So both operations live here, sharing
-// one mul_unit and one add_unit, and the price of the constraint is paid in
-// TIME instead of area: the module is sequential.
-//
-// Schedule
-// --------
-//   ADD / SUB     A_RE:  real parts                     2 cycles of work
-//                 A_IM:  imaginary parts
-//
-//   MUL           M1: mul = ar*br                       4 cycles of work
-//                 M2: mul = ai*bi , add = t1 - mul      (real part done)
-//                 M3: mul = ar*bi
-//                 M4: mul = ai*br , add = t3 + mul      (imag part done)
-//
-// Note how M2 and M4 use the adder on the product being computed in that very
-// cycle while the multiplier is already busy with the next one. That overlap
-// is what brings the multiply down from 6 cycles to 4 without adding a second
-// unit of either kind.
 module complex_alu (
     input  wire                    Clk,
     input  wire                    RstN,

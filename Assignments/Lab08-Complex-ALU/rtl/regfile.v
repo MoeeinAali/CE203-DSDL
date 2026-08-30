@@ -1,14 +1,5 @@
 `include "complex_pkg.vh"
 
-// Eight complex registers. Two read ports feed the decode stage; the third is
-// a read-only observation port used by the testbenches and the waveform, so
-// they never have to reach inside the module.
-//
-// Reads are combinational and a write lands on the clock edge, so an
-// instruction reading a register in the same cycle it is written sees the OLD
-// value. The pipeline compensates for that with an explicit forward from the
-// write-back stage rather than a read-during-write trick inside the array,
-// which keeps this module trivially synthesisable as block RAM or flops.
 module regfile (
     input  wire                    Clk,
     input  wire                    RstN,
