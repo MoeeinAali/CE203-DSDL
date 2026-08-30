@@ -269,4 +269,28 @@ always @(posedge Clk)
 
 در نهایت، خاصیت پسماند در این طراحی یک ویژگی عمدی است نه اتفاقی. باند مرده‌ی $15$ تا $35$ درجه باعث می‌شود سیستم حول یک نقطه‌ی تنظیم دچار روشن و خاموش شدن پیاپی نشود، که هم برای عمر عملگرها و هم برای پایداری دمای داخل محفظه مطلوب است.
 
+\pagebreak
+\subsubsection*{خروجی سنتز (\lr{Quartus Prime})}
+
+طرح روی \lr{Intel Quartus Prime Lite Edition 21.1.0} با موجودیت سطح‌بالای \lr{incubator\_controller} (شامل \lr{main\_fsm}، \lr{fan\_fsm}، \lr{tick\_gen} و \lr{seven\_seg\_decoder}) سنتز و Place \& Route شد. دستگاه هدف: \lr{Cyclone V} (\lr{5CGXFC7C7F23C8}).
+
+\begin{center}
+\begin{tabular}{@{}lr@{}}
+\toprule
+{مورد} & {نتیجه} \\
+\midrule
+وضعیت کامپایل & موفق ($0$ خطا، $17$ هشدار) \\
+\lr{Logic utilization (ALMs)} & $44 / 56480$ ($<1\%$) \\
+\lr{Total registers} & $41$ \\
+\lr{Total pins} & $28 / 268$ ($10\%$) \\
+\lr{Block memory bits} & $0$ \\
+\lr{DSP Blocks} & $0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}
+\includegraphics[width=\textwidth]{figs/quartus_synthesis.jpg}
+\end{center}
+
 \end{document}
