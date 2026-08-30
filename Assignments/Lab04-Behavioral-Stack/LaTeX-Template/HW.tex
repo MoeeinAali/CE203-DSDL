@@ -234,4 +234,28 @@ wire do_pop  = Pop  & ~Push & ~Empty;
 
 نکته‌ی مهم دیگر این است که در توصیف رفتاری، حالت‌های مرزی به‌طور خودکار امن نمی‌شوند؛ سرریز، تهی‌خوانی و فرمان‌های متناقض باید صریحا در کد مدیریت شوند، وگرنه اشاره‌گر پشته می‌تواند از محدوده خارج شود. به همین دلیل بخش عمده‌ی تست‌بنچ به همین حالت‌ها اختصاص یافته است.
 
+\pagebreak
+\subsubsection*{خروجی سنتز (\lr{Quartus Prime})}
+
+طرح روی \lr{Intel Quartus Prime Lite Edition 21.1.0} با موجودیت سطح‌بالای \lr{stack} سنتز و Place \& Route شد. دستگاه هدف: \lr{Cyclone V} (\lr{5CGXFC7C7F23C8}).
+
+\begin{center}
+\begin{tabular}{@{}lr@{}}
+\toprule
+{مورد} & {نتیجه} \\
+\midrule
+وضعیت کامپایل & موفق ($0$ خطا، $2$ هشدار) \\
+\lr{Logic utilization (ALMs)} & $22 / 56480$ ($<1\%$) \\
+\lr{Total registers} & $36$ \\
+\lr{Total pins} & $14 / 268$ ($5\%$) \\
+\lr{Block memory bits} & $0$ \\
+\lr{DSP Blocks} & $0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}
+\includegraphics[width=\textwidth]{figs/quartus_synthesis.jpg}
+\end{center}
+
 \end{document}
